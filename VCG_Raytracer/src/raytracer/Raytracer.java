@@ -20,11 +20,17 @@ import ui.Window;
 import utils.*;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Raytracer {
 
+    //private ArrayList<Shape> shapeList = new ArrayList<>();
+    //private ArrayList<Light> lightList = new ArrayList<>();
+
     private BufferedImage mBufferedImage;
     private Window mRenderWindow;
+    private RgbColor mBackgroundColor;
+    private int maxRecursions;
 
     public Raytracer(Window renderWindow){
         mBufferedImage = renderWindow.getBufferedImage();
@@ -50,5 +56,29 @@ public class Raytracer {
         }
 
         IO.saveImageToPng(mBufferedImage, "raytracing.png");
+    }
+
+    private RgbColor sendPrimaryRay(){
+
+        // Dummy return value
+        return new RgbColor(0, 0, 0);
+    }
+
+    private RgbColor traceRay(){
+
+        // Dummy return value
+        return new RgbColor(0, 0, 0);
+    }
+
+    private RgbColor shade(){
+
+        // Dummy return value
+        return new RgbColor(0, 0, 0);
+    }
+
+    private RgbColor traceIllumination(){
+
+        // Dummy return value
+        return new RgbColor(0, 0, 0);
     }
 }
