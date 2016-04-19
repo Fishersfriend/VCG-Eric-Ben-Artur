@@ -60,4 +60,12 @@ public class Window {
 
         mFrame.repaint();
     }
+
+    public int getWidth(){
+        return mWidth;
+    }
+
+    public int getHeight(){
+        return mHeight;
+    }
 }

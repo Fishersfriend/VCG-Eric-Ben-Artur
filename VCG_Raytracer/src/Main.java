@@ -25,6 +25,7 @@
 
 import ui.Window;
 import raytracer.Raytracer;
+import utils.Log;
 
 // Main application class. This is the routine called by the JVM to run the program.
 public class Main {
