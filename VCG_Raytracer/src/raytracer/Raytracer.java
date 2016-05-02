@@ -18,9 +18,11 @@ package raytracer;
 
 import ui.Window;
 import utils.*;
+import sceneobjects.*;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.lang.Math.*;
 
 public class Raytracer {
 
@@ -40,19 +42,28 @@ public class Raytracer {
     public void renderScene(){
         Log.print(this, "Start rendering");
 
-        float r = 0;
-        float g = 0;
-        float b = 0;
+        float r = 1;
+        float g = 1;
+        float b = 1;
+		
+		Ray ray = new Ray(mRenderWindow.getWidth(), mRenderWindow.getHeight());
+		Camera camera = new Camera(new Vec3(0, 0, 1));
+		ray.setStartPoint(camera.getCameraPosition());	
 
-        for(int i = 0; i < mRenderWindow.getWidth(); i++){
-            for(int j = 0; j < mRenderWindow.getHeight(); j++) {
-
-                mRenderWindow.setPixel(mBufferedImage, new RgbColor(r, g, b), new Vec2(i, j));
-                g += 0.0008;
-                r += 0.000002;
+        for(int h = 0; h < mRenderWindow.getHeight(); h++){
+            for(int w = 0; w < mRenderWindow.getWidth(); w++) {
+				ray.normalizePixel(w, h);
+				
+				if(ray.xNormPixel > 0){
+					r = ray.getDirection().x;
+				}else if(ray.xNormPixel <= 0){
+					g = Math.abs(ray.getDirection().x);
+				}
+				
+				
+                mRenderWindow.setPixel(mBufferedImage, new RgbColor(r, g, b) , new Vec2(w, h));
+				
             }
-
-            g = 0;
         }
 
         IO.saveImageToPng(mBufferedImage, "raytracing.png");
