@@ -4,21 +4,26 @@ import utils.*;
 
 public class Ray {
 	
-	private Vec3 startPoint;
-	private Vec3 endPoint;
-	private Vec3 direction;
-	private float distance;
+	public Vec3 startPoint;
+	public Vec3 endPoint;
+	public Vec3 direction;
+	public float distance;
 
 	private float windowWidth;
 	private float windowHeight;
 	
 	public float xNormPixel;
 	public float yNormPixel;
+
+	public Ray() {
+
+	}
 	
     public Ray(float windowWidth, float windowHeight){
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
     }
+
 	
 	public void setStartPoint(Vec3 startPoint){
 		this.startPoint = startPoint;
