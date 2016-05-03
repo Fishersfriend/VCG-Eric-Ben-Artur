@@ -1,5 +1,7 @@
 import utils.*;
 
+
+
 public class Ray {
 
     public Ray(){
