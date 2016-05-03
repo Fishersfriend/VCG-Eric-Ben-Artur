@@ -54,11 +54,18 @@ public class Raytracer {
             for(int w = 0; w < mRenderWindow.getWidth(); w++) {
 				ray.normalizePixel(w, h);
 				
-				if(ray.xNormPixel > 0){
-					r = ray.getDirection().x;
-				}else if(ray.xNormPixel <= 0){
-					g = Math.abs(ray.getDirection().x);
+				if(w < 400 && h < 300){
+                    r = ray.getDirection().x+1;
+                    g = ray.getDirection().y+1;
+
+                }
+                if(h >= 300){
+                    r = ray.getDirection().x+1;
+                    g = Math.abs(ray.getDirection().y-1);
 				}
+                if(w >=400){
+                    r = Math.abs(ray.getDirection().x-1);
+                }
 				
 				
                 mRenderWindow.setPixel(mBufferedImage, new RgbColor(r, g, b) , new Vec2(w, h));
