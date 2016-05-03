@@ -42,8 +42,8 @@ public class Raytracer {
     public void renderScene(){
         Log.print(this, "Start rendering");
 
-        float r = 0;
-        float g = 0;
+        float r = 1;
+        float g = 1;
         float b = 1;
 		
 		Ray ray = new Ray(mRenderWindow.getWidth(), mRenderWindow.getHeight());
@@ -52,20 +52,15 @@ public class Raytracer {
 
         for(int h = 0; h < mRenderWindow.getHeight(); h++){
             for(int w = 0; w < mRenderWindow.getWidth(); w++) {
-                ray.normalizePixel(w, h);
-                    if(w < 400 && h < 300){
-                        r = ray.getDirection().x+1;
-                        g = ray.getDirection().y+1;
-
-                    }
-                    if(h >= 300){
-                        r = ray.getDirection().x+1;
-                        g = Math.abs(ray.getDirection().y-1);
-                    }
-                    if(w >=400){
-                        r = Math.abs(ray.getDirection().x-1);
-                    }
-
+				ray.normalizePixel(w, h);
+				
+				if(ray.xNormPixel > 0){
+					r = ray.getDirection().x;
+				}else if(ray.xNormPixel <= 0){
+					g = Math.abs(ray.getDirection().x);
+				}
+				
+				
                 mRenderWindow.setPixel(mBufferedImage, new RgbColor(r, g, b) , new Vec2(w, h));
 				
             }
