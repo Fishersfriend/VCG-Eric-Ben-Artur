@@ -14,14 +14,18 @@ public class Camera extends SceneObject {
 	private Vec3 sideVector;
 	private Vec3 upVector;
 
-	private float windowHeight;
-	private float windowWidth;
+	private float viewplaneHeight;
+	private float viewplaneWidth;
 
 	private float viewAngle;
 	private float focalLength;
 	private float ratio;
 
-	public Camera(Vec3 cameraPosition, Vec3 lookAt, Vec3 userUpVector, float viewAngle, float focalLength, float ratio){
+    private Window renderWindow;
+    private float viewplaneX;
+    private float viewplaneY;
+
+	public Camera(Window renderWindow, Vec3 cameraPosition, Vec3 lookAt, Vec3 userUpVector, float viewAngle, float focalLength){
 
 		viewVector = lookAt.sub(cameraPosition);
 		viewVector = viewVector.normalize();
@@ -29,16 +33,28 @@ public class Camera extends SceneObject {
 		sideVector = viewVector.cross(userUpVector);
 		upVector = sideVector.cross(viewVector);
 
-		windowHeight = 2 * (float) Math.tan(viewAngle/2);
-		System.out.println(ratio);
+        this.renderWindow = renderWindow;
+        this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
+
+		viewplaneHeight = 2 * (float) Math.tan(viewAngle/2);
+		viewplaneWidth = viewplaneHeight * this.ratio;
 
 		this.viewAngle = viewAngle;
 		this.focalLength = focalLength;
-		this.ratio = ratio;
 		this.lookAt = lookAt;
 		this.userUpVector = userUpVector;
 		this.cameraPosition = cameraPosition;
 	}
+
+    public Vec3 windowToViewplane(float windowX, float windowY){
+        viewplaneX = ((2*windowX+0.5f)/(float) renderWindow.getWidth())-1.0f;
+        viewplaneY = ((2*windowY+0.5f)/(float) renderWindow.getHeight())-1.0f;
+
+        viewplaneX = viewplaneX*(0.5f*(viewplaneWidth));
+        viewplaneY = viewplaneY*(0.5f*(viewplaneHeight));
+
+        return new Vec3(viewplaneX, viewplaneY, focalLength);
+    }
 
 	public Vec3 calculateDestinationPoint(){
 

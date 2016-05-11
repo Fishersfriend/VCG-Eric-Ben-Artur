@@ -47,22 +47,19 @@ public class Raytracer {
         float g = 1;
         float b = 1;
 
-		Ray ray = new Ray(mRenderWindow.getWidth(), mRenderWindow.getHeight());
-		Camera camera = new Camera(new Vec3(112, 156, 136), new Vec3(12, 6, 7), new Vec3(0, 1, 0), 1, 1, ((float) mRenderWindow.getWidth()/(float) mRenderWindow.getHeight()));
-		ray.setStartPoint(camera.getCameraPosition());
+		Camera camera = new Camera(mRenderWindow, new Vec3(0, 0, 0), new Vec3(0, 0, 10), new Vec3(0, 1, 0), (float) Math.PI-0.1f, 1);
+        Ray ray = new Ray(camera.getCameraPosition());
+        ray.setDirection(camera.windowToViewplane(399, 299));
+        ray.normalize();
+        Vec3 sphere = new Vec3(0, 0, 50);
 
         for(int h = 0; h < mRenderWindow.getHeight(); h++){
-            for(int w = 0; w < mRenderWindow.getWidth(); w++) {
-				ray.normalizePixel(w, h);
+            for(int w = 0; w < mRenderWindow.getWidth(); w++){
 
-				if(ray.xNormPixel > 0){
-					r = ray.getDirection().x;
-				}else if(ray.xNormPixel <= 0){
-					g = Math.abs(ray.getDirection().x);
-				}
+                ray.setDirection(camera.windowToViewplane(w, h));
+                ray.normalize();
 
-
-                mRenderWindow.setPixel(mBufferedImage, new RgbColor(r, g, b) , new Vec2(w, h));
+                mRenderWindow.setPixel(mBufferedImage, new RgbColor(ray.direction.z, ray.direction.z, ray.direction.z), new Vec2(w, h));
 
             }
         }
