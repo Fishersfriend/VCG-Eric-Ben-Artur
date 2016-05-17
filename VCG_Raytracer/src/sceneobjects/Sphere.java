@@ -3,45 +3,53 @@ package sceneobjects;
 import raytracer.Ray;
 import utils.RgbColor;
 import utils.Vec3;
+import java.lang.Math;
 
 /**
  * Created by PraktikumCG on 03.05.2016.
  */
 public class Sphere extends Shape {
-    private float radius;
-    private RgbColor color;
 
-    public Sphere (float radius, Vec3 position, RgbColor color) {
+    public Material material;
+    private float radius;
+
+    public Sphere (float radius, Vec3 position, Material material) {
         this.radius = radius;
         super.position = position;
-        this.color = color;
+        this.material = material;
     }
 
-    public RgbColor getColor() {
-        return color;
-    }
+    public Vec3 getNormal (Ray ray) {
+        Vec3 intersecPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
 
-    public Vec3 calculateNormal (Vec3 interSectionPoint) {
-        Vec3 normal = interSectionPoint.sub(super.position);
-        return normal.normalize();
+        return intersecPoint.sub(this.position).normalize();
     }
 
     @Override
-    public void intersect (Ray ray) {
-        float b = 2 * ray.startPoint.scalar(ray.direction);
-        float c = ray.startPoint.scalar(ray.startPoint) - radius * radius;
-        float discriminant = b * b - 4 * c;
-        float t0 = (float) (-b - Math.sqrt(discriminant))/2;
-        float t1 = (float) (-b + Math.sqrt(discriminant))/2;
+    public boolean intersect(Ray ray) {
 
-        /* hier weiter machen
-        if((discriminant >= 0) && (t0 > 0 && t1 > 0)){
-            if(t0 < t1)
-            Vec3 interSectionPoint = ray.startPoint.add(ray.getDirection().multScalar(t0));
-            Intersection intersection = new Intersection(ray, this, )
-        }
+        double b = 2 * ray.startPoint.scalar(ray.direction);
 
-        */
+        double c = ray.startPoint.x * ray.startPoint.x + ray.startPoint.y * ray.startPoint.y + ray.startPoint.z * ray.startPoint.z - radius * radius;
 
+        double d = b*b - 4*c;
+
+        double t0 = (float) (0.5 * (-b - Math.sqrt(b*b - 4*c)));
+
+        double t1 = (float) (0.5 * (-b + Math.sqrt(b*b - 4*c)));
+
+        if (d > 0) {
+            if (t0 > 0 && t1 > 0) {
+                ray.t = (float) Math.min(t0, t1);
+                return true;
+            } else if (t0 < 0 && t1 > 0) {
+                ray.t = (float) t1;
+                return true;
+            } else if (t0 > 0 && t1 < 0) {
+                ray.t = (float) t0;
+                return true;
+            } else { return false;}
+        } else
+            return false;
     }
 }

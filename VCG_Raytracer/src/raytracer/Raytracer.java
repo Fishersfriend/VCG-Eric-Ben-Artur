@@ -28,7 +28,7 @@ import java.lang.Math.*;
 public class Raytracer {
 
     //private ArrayList<Shape> shapeList = new ArrayList<>();
-    //private ArrayList<Light> lightList = new ArrayList<>();
+    private ArrayList<Light> lightList = new ArrayList<>();
 
     private BufferedImage mBufferedImage;
     private Window mRenderWindow;
@@ -47,11 +47,17 @@ public class Raytracer {
         float g = 1;
         float b = 1;
 
-		Camera camera = new Camera(mRenderWindow, new Vec3(0, 0, 0), new Vec3(0, 0, 10), new Vec3(0, 1, 0), (float) Math.PI-0.1f, 1);
+        RgbColor background = new RgbColor(0,0,0);
+
+		Camera camera = new Camera(mRenderWindow, new Vec3(0, 0, -5f), new Vec3(0, 0, 10), new Vec3(0, 1, 0), (float) Math.PI-0.1f, 1);
         Ray ray = new Ray(camera.getCameraPosition());
         ray.setDirection(camera.windowToViewplane(399, 299));
         ray.normalize();
-        Vec3 sphere = new Vec3(0, 0, 50);
+        Sphere sphere = new Sphere(4f, new Vec3(0,0,0), new Material(new RgbColor(0.5f,0.5f,0.5f), new RgbColor(0.5f,0.5f,0.5f), new RgbColor(0.5f,0.5f,0.5f), 6));  //radius,pos,ka,ks,kd,n
+        Light light0 = new Light(0, new Vec3(10,4,-3), new RgbColor(1f, 0.8f, 0.1f), new RgbColor(0.1f, 0.1f, 0.1f));   //type,pos,color,ambient
+        Light light1 = new Light(0, new Vec3(-10,-4,-3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
+
+        lightList.add(0, light0); lightList.add(1, light1);
 
         for(int h = 0; h < mRenderWindow.getHeight(); h++){
             for(int w = 0; w < mRenderWindow.getWidth(); w++){
@@ -59,7 +65,15 @@ public class Raytracer {
                 ray.setDirection(camera.windowToViewplane(w, h));
                 ray.normalize();
 
-                mRenderWindow.setPixel(mBufferedImage, new RgbColor(ray.direction.z, ray.direction.z, ray.direction.z), new Vec2(w, h));
+               // mRenderWindow.setPixel(mBufferedImage, new RgbColor(ray.direction.z, ray.direction.z, ray.direction.z), new Vec2(w, h));
+
+                if (sphere.intersect(ray)) {
+                    Intersection intersec = new Intersection(ray, sphere);
+
+                    mRenderWindow.setPixel(mBufferedImage, sphere.material.shade(sphere.getNormal(ray), ray.startPoint, lightList, intersec), new Vec2(w, h));
+                } else {
+                    mRenderWindow.setPixel(mBufferedImage, background, new Vec2(w, h));
+                }
 
             }
         }

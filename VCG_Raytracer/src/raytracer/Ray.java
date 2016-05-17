@@ -7,6 +7,7 @@ public class Ray {
 	public Vec3 startPoint;
 	public Vec3 endPoint;
 	public Vec3 direction;
+	public float t;
 	public float distance;
 
 	public Ray() {

@@ -7,8 +7,12 @@ import raytracer.Ray;
  */
 public abstract class Shape extends SceneObject {
 
-    public void intersect (Ray ray) {
 
+    public boolean intersect (Ray ray) {
+
+
+
+        return false;
     }
 
 }

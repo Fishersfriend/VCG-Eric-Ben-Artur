@@ -10,7 +10,7 @@ import raytracer.*;
  * Created by PraktikumCG on 03.05.2016.
  */
 public class Intersection {
-    private Vec3 interSectionPoint;
+    private Vec3 intersectionPoint;
     private Vec3 normal;
     private Ray inRay;
     private Ray outRay;
@@ -19,10 +19,14 @@ public class Intersection {
     private boolean incoming;
     private boolean hit;
 
-    public Intersection (Ray ray, Shape shape, Vec3 interSectionPoint) {
+    public Intersection (Ray ray, Shape shape) {
         this.shape = shape;
         this.inRay = ray;
-        this.interSectionPoint = interSectionPoint;
+        this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+    }
+
+    public Vec3 getIntersec() {
+        return intersectionPoint;
     }
 
     public Ray calculateReflectionRay() {
