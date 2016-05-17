@@ -13,13 +13,19 @@ public class Plane extends Shape {
 
     @Override
     public boolean intersect (Ray ray) {
-        float determ = normal.scalar(ray.direction);
+        float pnp0 = normal.scalar(ray.startPoint);
 
-        if (determ == 0) {return false;}
-        else if (determ > 0) {ray.t = - (normal.scalar(ray.startPoint) + position.length()) / determ; return true;}
-        else if (determ < 0) {ray.t = - (normal.scalar(ray.startPoint) + position.length()) / determ; return true;}
+        //t = -((pnp0 + position.length())/(normal.scalar(ray.direction)));
 
-        return false;
+        if(normal.scalar(ray.direction) > 0){
+          ray.t = -((pnp0 + position.length())/(normal.scalar(ray.direction)));
+        }else{
+          return false;
+        }
+
+        //System.out.println(t);
+
+        return true;
     }
 
 

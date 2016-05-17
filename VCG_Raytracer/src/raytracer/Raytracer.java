@@ -54,6 +54,10 @@ public class Raytracer {
         ray.setDirection(camera.windowToViewplane(399, 299));
         ray.normalize();
         Sphere sphere = new Sphere(4f, new Vec3(0,0,0), new Material(new RgbColor(0.5f,0.5f,0.5f), new RgbColor(0.5f,0.5f,0.5f), new RgbColor(0.5f,0.5f,0.5f), 6));  //radius,pos,ka,ks,kd,n
+
+        Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0));
+        Plane leftPlane = new Plane(new Vec3(-10f, 0f, 0f), new Vec3(1, 0, 0));
+
         Light light0 = new Light(0, new Vec3(10,4,-3), new RgbColor(1f, 0.8f, 0.1f), new RgbColor(0.1f, 0.1f, 0.1f));   //type,pos,color,ambient
         Light light1 = new Light(0, new Vec3(-10,-4,-3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
 
@@ -71,7 +75,29 @@ public class Raytracer {
                     Intersection intersec = new Intersection(ray, sphere);
 
                     mRenderWindow.setPixel(mBufferedImage, sphere.material.shade(sphere.getNormal(ray), ray.startPoint, lightList, intersec), new Vec2(w, h));
-                } else {
+                } else if (bottomPlane.intersect(ray) || leftPlane.intersect(ray)) {
+
+                    float t0 = 0;
+                    float t1 = 0;
+
+                    //Intersection intersec = new Intersection(ray, bottomPlane);
+                    if(bottomPlane.intersect(ray)){
+                        t0 = ray.t;
+                    }
+
+                    if(leftPlane.intersect(ray)){
+                        t1 = ray.t;
+                    }
+
+                    if(t1 < t0){
+                      mRenderWindow.setPixel(mBufferedImage, new RgbColor(0.5f, 0.5f, 0), new Vec2(w, h));
+                    }else{
+                      mRenderWindow.setPixel(mBufferedImage, new RgbColor(0.0f, 0.5f, 0.5f), new Vec2(w, h));
+                    }
+
+
+
+                }else {
                     mRenderWindow.setPixel(mBufferedImage, background, new Vec2(w, h));
                 }
 

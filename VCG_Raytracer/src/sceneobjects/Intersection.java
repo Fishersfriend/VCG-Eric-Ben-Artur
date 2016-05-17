@@ -23,6 +23,8 @@ public class Intersection {
         this.shape = shape;
         this.inRay = ray;
         this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+
+        System.out.println(intersectionPoint);
     }
 
     public Vec3 getIntersec() {
