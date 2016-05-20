@@ -6,18 +6,18 @@ import sceneobjects.*;
 import java.lang.Math;
 import java.util.ArrayList;
 
-public class Material {
+public class Material {                                                                                                 //Klasse Material
 
-    private RgbColor ka, kd, ks;
+    private RgbColor ka, kd, ks;                                                                                        //Variblen Ambient,Diffus,Spekular,Shininess
     private double n;
 
 
-    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, double shininess) {
+    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, double shininess) {                          //Übergabe der Variablen
 
         ka = ambient; kd = diffuse; ks = specular; n = shininess;
     }
 
-    public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Intersection intersec) {
+    public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Intersection intersec) {             //Phong Beleuchtungs-Berechnung
 
         float red = 0, green = 0, blue = 0;
         int i;

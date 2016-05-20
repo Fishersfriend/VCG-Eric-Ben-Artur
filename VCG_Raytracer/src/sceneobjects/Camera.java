@@ -5,8 +5,8 @@ import utils.*;
 import ui.*;
 import java.lang.Math;
 
-public class Camera extends SceneObject {
-	private Vec3 cameraPosition;
+public class Camera extends SceneObject {																				//Klasse Camera erweitert SceneObject
+	private Vec3 cameraPosition;																						//Variablen
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
 
@@ -46,7 +46,7 @@ public class Camera extends SceneObject {
 		this.cameraPosition = cameraPosition;
 	}
 
-    public Vec3 windowToViewplane(float windowX, float windowY){
+    public Vec3 windowToViewplane(float windowX, float windowY){														//Tranformation Fenster zu Viewplane
         viewplaneX = ((2*windowX+1f)/(float) renderWindow.getWidth()) -1.0f;
         viewplaneY = ((2*windowY+1f)/(float) renderWindow.getHeight()) -1.0f;
 
