@@ -24,7 +24,7 @@ public class Intersection {
         this.inRay = ray;
         this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
 
-        System.out.println(intersectionPoint);
+        //System.out.println(intersectionPoint);
     }
 
     public Vec3 getIntersec() {

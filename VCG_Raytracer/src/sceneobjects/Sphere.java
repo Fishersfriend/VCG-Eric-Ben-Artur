@@ -27,6 +27,7 @@ public class Sphere extends Shape {                                             
 
     @Override
     public boolean intersect(Ray ray) {                                                                                 //Methode intersect
+        ray.startPoint = ray.startPoint.sub(this.position);
 
         double b = 2 * ray.startPoint.scalar(ray.direction);                                                            //Variablen für DeterminantenTest
 
@@ -37,6 +38,7 @@ public class Sphere extends Shape {                                             
         double t0 = (float) (0.5 * (-b - Math.sqrt(b*b - 4*c)));
 
         double t1 = (float) (0.5 * (-b + Math.sqrt(b*b - 4*c)));
+        ray.startPoint = ray.startPoint.add(this.position);
 
         if (d > 0) {                                                                                                    //Prüfen ob Sphere wichtig für die Szene
             if (t0 > 0 && t1 > 0) {

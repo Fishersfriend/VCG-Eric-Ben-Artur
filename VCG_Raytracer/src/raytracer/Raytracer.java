@@ -40,30 +40,30 @@ public class Raytracer {                                                        
         mRenderWindow = renderWindow;
     }
 
-    public void renderScene(){                                                                                          //Methode renderScene (aufgerufen von Main)
+    public void renderScene() {                                                                                          //Methode renderScene (aufgerufen von Main)
         Log.print(this, "Start rendering");
 
-        RgbColor background = new RgbColor(0,0,0);                                                                      //setzen der Hintergrundfarbe
+        RgbColor background = new RgbColor(0, 0, 0);                                                                      //setzen der Hintergrundfarbe
 
         //Kamera erstellen
-		Camera camera = new Camera(mRenderWindow, new Vec3(0, 0, -5f), new Vec3(0, 0, 10),                              //Kamera erstellen (Position,LookAt,UserUp,
-                        new Vec3(0, 1, 0), (float) Math.PI-0.1f, 1);                                                    //                  ViewAngle,focalLength)
+        Camera camera = new Camera(mRenderWindow, new Vec3(0, 0, -20f), new Vec3(0, 0, 0),                              //Kamera erstellen (Position,LookAt,UserUp,
+                new Vec3(0, 1, 0), 2f, 1f);                                                                             //                  ViewAngle,focalLength)
 
         Ray ray = new Ray(camera.getCameraPosition());                                                                  //Ray erstellen (startPosition)
         ray.setDirection(camera.windowToViewplane(399, 299));                                                           //setdirection(endPoint)aufrufen
         ray.normalize();                                                                                                //normalze aufrufen
 
+        Sphere sphere = new Sphere(0.5f, new Vec3(-2f, -2f, 20), new Material                                                    //Kugel erstellen (radius, position Material
+                (new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.5f, 0.5f, 0.5f), 6));         //                 ka,ks,kd,n)
 
-        Sphere sphere = new Sphere(4f, new Vec3(0,0,0), new Material                                                    //Kugel erstellen (radius, position Material
-                (new RgbColor(0.5f,0.5f,0.5f), new RgbColor(0.5f,0.5f,0.5f), new RgbColor(0.5f,0.5f,0.5f), 6));         //                 ka,ks,kd,n)
-
-        Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0),new RgbColor(1, 0, 0));            //Plane Erstellen (Position,Normal,Farbe)
+        Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), new RgbColor(1, 0, 0));                  //Plane Erstellen (Position,Normal,Farbe)
         Plane leftPlane = new Plane(new Vec3(-10f, 0f, 0f), new Vec3(1, 0, 0), new RgbColor(0.0f, 1, 0));
 
-        Light light0 = new Light(0, new Vec3(10,4,-3), new RgbColor(1f, 0.8f, 0.1f), new RgbColor(0.1f, 0.1f, 0.1f));   //Licht Erstellen (type,position,color,ambient)
-        Light light1 = new Light(0, new Vec3(-10,-4,-3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
+        Light light0 = new Light(0, new Vec3(10, 4, -3), new RgbColor(1f, 0.8f, 0.1f), new RgbColor(0.1f, 0.1f, 0.1f));   //Licht Erstellen (type,position,color,ambient)
+        Light light1 = new Light(0, new Vec3(-10, -4, -3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
 
-        lightList.add(0, light0); lightList.add(1, light1);                                                             //LichtListe
+        lightList.add(0, light0);
+        lightList.add(1, light1);                                                                                       //LichtListe
 
         for(int h = 0; h < mRenderWindow.getHeight(); h++){                                                             //Schleife für Höhe
             for(int w = 0; w < mRenderWindow.getWidth(); w++){                                                          //schleife für Breite
@@ -75,7 +75,6 @@ public class Raytracer {                                                        
 
                 if (sphere.intersect(ray)) {                                                                            //Wenn Kugel getroffen
                     Intersection intersec = new Intersection(ray, sphere);                                              //Intersection Objekt erstellen
-
                     mRenderWindow.setPixel(mBufferedImage, sphere.material.shade(sphere.getNormal(ray), ray.startPoint, lightList, intersec), new Vec2(w, h));
                 }
                 else if (bottomPlane.intersect(ray) || leftPlane.intersect(ray)) {                                      //wenn Plane getroffen
@@ -113,6 +112,10 @@ public class Raytracer {                                                        
 
         IO.saveImageToPng(mBufferedImage, "raytracing.png");                                                            //Speichere Bild
     }
+
+
+
+
 
     private RgbColor sendPrimaryRay(){
 
