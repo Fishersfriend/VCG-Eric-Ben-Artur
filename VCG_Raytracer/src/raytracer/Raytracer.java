@@ -53,7 +53,7 @@ public class Raytracer {                                                        
         ray.setDirection(camera.windowToViewplane(399, 299));                                                           //setdirection(endPoint)aufrufen
         ray.normalize();                                                                                                //normalze aufrufen
 
-        Sphere sphere = new Sphere(0.5f, new Vec3(-2f, -2f, 20), new Material                                                    //Kugel erstellen (radius, position Material
+        Sphere sphere = new Sphere(1f, new Vec3(-1f, -1f, 20), new Material                                                    //Kugel erstellen (radius, position Material
                 (new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.5f, 0.5f, 0.5f), 6));         //                 ka,ks,kd,n)
 
         Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), new RgbColor(1, 0, 0));                  //Plane Erstellen (Position,Normal,Farbe)

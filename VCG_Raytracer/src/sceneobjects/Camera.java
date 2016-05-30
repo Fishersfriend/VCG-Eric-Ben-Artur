@@ -6,6 +6,9 @@ import ui.*;
 import java.lang.Math;
 
 public class Camera extends SceneObject {																				//Klasse Camera erweitert SceneObject
+
+	Matrix4 matrixTransformation;
+
 	private Vec3 cameraPosition;																						//Variablen
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
@@ -44,6 +47,8 @@ public class Camera extends SceneObject {																				//Klasse Camera erw
 		this.lookAt = lookAt;
 		this.userUpVector = userUpVector;
 		this.cameraPosition = cameraPosition;
+		matrixTransformation = new Matrix4();
+		matrixTransformation.translate(cameraPosition);
 	}
 
     public Vec3 windowToViewplane(float windowX, float windowY){														//Tranformation Fenster zu Viewplane

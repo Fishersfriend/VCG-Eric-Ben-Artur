@@ -4,6 +4,8 @@ import utils.*;
 
 public class Ray {																										//Klasse Raytracer
 
+	public Matrix4 matrixTransformation;
+
 	public Vec3 startPoint;																								//Variablen
 	public Vec3 endPoint;
 	public Vec3 direction;
@@ -16,7 +18,9 @@ public class Ray {																										//Klasse Raytracer
 
     public Ray(Vec3 startPoint){
 		this.startPoint = startPoint;																					//startpoint übergabe
-    }
+		matrixTransformation = new Matrix4();
+		matrixTransformation.translate(startPoint);
+	}
 
 
 	public void setStartPoint(Vec3 startPoint){																			//Methode setStartPoint (wird in aufgerufen)
