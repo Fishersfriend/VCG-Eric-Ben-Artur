@@ -13,15 +13,16 @@ public class Sphere extends Shape {                                             
 
     Matrix4 matrixTransformation;
     Matrix4 inverse;
-
-    public Material material;                                                                                           //Material
+                                                                                      //Material
     private float radius;                                                                                               //Radius
     private float rQuad;
 
     public Sphere (float radius, Vec3 position, Material material) {                                                    //Konstruktor Sphere
+
+        super(position, material);
+
         this.radius = radius;
-        super.position = position;
-        this.material = material;
+
         rQuad = radius*radius;
         matrixTransformation = new Matrix4();
         matrixTransformation.translate(position);

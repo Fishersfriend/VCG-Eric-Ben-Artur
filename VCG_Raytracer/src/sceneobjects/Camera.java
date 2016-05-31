@@ -8,8 +8,7 @@ import java.lang.Math;
 public class Camera extends SceneObject {																				//Klasse Camera erweitert SceneObject
 
 	Matrix4 matrixTransformation;
-
-	private Vec3 cameraPosition;																						//Variablen
+																						//Variablen
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
 
@@ -24,31 +23,33 @@ public class Camera extends SceneObject {																				//Klasse Camera erw
 	private float focalLength;
 	private float ratio;
 
-    private Window renderWindow;
-    private float viewplaneX;
-    private float viewplaneY;
+  private Window renderWindow;
+  private float viewplaneX;
+  private float viewplaneY;
 
 	public Camera(Window renderWindow, Vec3 cameraPosition, Vec3 lookAt, Vec3 userUpVector, float viewAngle, float focalLength){
 
-		viewVector = lookAt.sub(cameraPosition);
-		viewVector = viewVector.normalize();
-		userUpVector = userUpVector.normalize();
-		sideVector = viewVector.cross(userUpVector);
-		upVector = sideVector.cross(viewVector);
+			super(cameraPosition);
 
-        this.renderWindow = renderWindow;
-        this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
+			viewVector = lookAt.sub(cameraPosition);
+			viewVector = viewVector.normalize();
+			userUpVector = userUpVector.normalize();
+			sideVector = viewVector.cross(userUpVector);
+			upVector = sideVector.cross(viewVector);
 
-		viewplaneHeight = 2 * (float) Math.tan(viewAngle/2);
-		viewplaneWidth = viewplaneHeight * this.ratio;
+	    this.renderWindow = renderWindow;
+	    this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
 
-		this.viewAngle = viewAngle;
-		this.focalLength = focalLength;
-		this.lookAt = lookAt;
-		this.userUpVector = userUpVector;
-		this.cameraPosition = cameraPosition;
-		matrixTransformation = new Matrix4();
-		matrixTransformation.translate(cameraPosition);
+			viewplaneHeight = 2 * (float) Math.tan(viewAngle/2);
+			viewplaneWidth = viewplaneHeight * this.ratio;
+
+			this.viewAngle = viewAngle;
+			this.focalLength = focalLength;
+			this.lookAt = lookAt;
+			this.userUpVector = userUpVector;
+
+			matrixTransformation = new Matrix4();
+			matrixTransformation.translate(cameraPosition);
 	}
 
     public Vec3 windowToViewplane(float windowX, float windowY){														//Tranformation Fenster zu Viewplane
@@ -67,7 +68,7 @@ public class Camera extends SceneObject {																				//Klasse Camera erw
 	}
 
 	public Vec3 getCameraPosition(){
-		return cameraPosition;
+		return position;
 	}
 
 

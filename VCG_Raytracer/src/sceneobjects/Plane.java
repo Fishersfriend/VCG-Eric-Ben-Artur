@@ -6,13 +6,11 @@ import utils.Vec3;
 
 public class Plane extends Shape {                                                                                      //Klasse plane
 
-    public Vec3 normal;                                                                                                 //NormalenVektor
-    public RgbColor color;
+    public Vec3 normal;                                                                                                //NormalenVektor
 
-    public Plane (Vec3 position, Vec3 normal, RgbColor color) {                                                         //Konstruktor Plane
-        super.position = position;                                                                                      //Position und Normale übergeben
+    public Plane (Vec3 position, Vec3 normal, Material material) {                                                         //Konstruktor Plane
+        super(position, material);                                                                                 //Position und Normale übergeben
         this.normal = normal.normalize();
-        this.color = color;
     }
 
     @Override
@@ -21,15 +19,20 @@ public class Plane extends Shape {                                              
 
         //t = -((pnp0 + position.length())/(normal.scalar(ray.direction)));
 
-        if(normal.scalar(ray.direction) > 0){                                                                           //Prüfen ob Plane wichtig für Szene
+        if(normal.scalar(ray.direction) < 0){                                                                           //Prüfen ob Plane wichtig für Szene
           ray.t = -((pnp0 + position.length())/(normal.scalar(ray.direction)));
         }else{
+          ray.t = -1;
           return false;
         }
 
         //System.out.println(t);
 
         return true;
+    }
+
+    public Vec3 getNormal (Ray ray) {                                                                                   //Methode getNormal
+        return normal;
     }
 
 
