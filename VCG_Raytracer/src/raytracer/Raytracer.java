@@ -45,7 +45,6 @@ public class Raytracer {                                                        
 
         RgbColor background = new RgbColor(0, 0, 0);                                                                      //setzen der Hintergrundfarbe
 
-        //Kamera erstellen
         Camera camera = new Camera(mRenderWindow, new Vec3(0, 0,-20f), new Vec3(0, 0, 0),                              //Kamera erstellen (Position,LookAt,UserUp,
                 new Vec3(0, 1, 0), 2f, 1f);                                                                             //                  ViewAngle,focalLength)
 
@@ -55,18 +54,18 @@ public class Raytracer {                                                        
         ray.setDirection(camera.windowToViewplane(399, 299));                                                           //setdirection(endPoint)aufrufen
         ray.normalize();                                                                                                //normalze aufrufen
 
-        Sphere sphere = new Sphere(1f, new Vec3(-1f, -0f, 40), phong);                                                     //Kugel erstellen (radius, position Material
+        Sphere sphere = new Sphere(1f, new Vec3(-1f, 0f, 40), phong);                                                     //Kugel erstellen (radius, position Material
         Plane topPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), phong);
         Plane bottomPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), phong);                                          //Plane Erstellen (Position,Normal,Farbe)
         Plane leftPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), phong);
         Plane rightPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), phong);
         Plane backPlane = new Plane(new Vec3(0f, 0f, 150f), new Vec3(0, 0f, -1), phong);
 
-        Light light0 = new Light(0, new Vec3(10, 4, -3), new RgbColor(1f, 0.8f, 0.1f), new RgbColor(0.1f, 0.1f, 0.1f));   //Licht Erstellen (type,position,color,ambient)
-        Light light1 = new Light(0, new Vec3(-10, -4, -3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
+        Light light0 = new Light(0, new Vec3(-10, 10, 20), new RgbColor(1f, 1f, 1f), new RgbColor(0.1f, 0.1f, 0.1f));   //Licht Erstellen (type,position,color,ambient)
+        //Light light1 = new Light(0, new Vec3(-4, -5, 30), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
 
         lightList.add(0, light0);
-        lightList.add(1, light1);
+        //lightList.add(1, light1);
 
         shapeList.add(0, leftPlane);
         shapeList.add(1, rightPlane);
@@ -76,6 +75,7 @@ public class Raytracer {                                                        
         shapeList.add(5, sphere);
 
         int intersecShape = 0;
+        Vec3 intersectionPoint;
         Intersection intersec = null;
         float oldIntersec = 100000000;
 
@@ -87,11 +87,11 @@ public class Raytracer {                                                        
 
                 for(int index = 0; index < shapeList.size(); index++){
                     shapeList.get(index).intersect(ray);
-
+                    intersectionPoint = shapeList.get(index).intersect(ray);
                     if((ray.t != -1) && (ray.t < oldIntersec)){
                         oldIntersec = ray.t;
                         intersecShape = index;
-                        intersec = new Intersection(ray, shapeList.get(index));
+                        intersec = new Intersection(ray, shapeList.get(index), intersectionPoint);
 
                         if(h == 320 && w == 600){
                           System.out.print(index + "(" + w + "/" + h + ")" + ": ");
@@ -122,9 +122,10 @@ public class Raytracer {                                                        
                 intersec = null;
                 oldIntersec = 100000000;
             }
-        }
 
-                                                                                       //LichtListe
+        }
+        IO.saveImageToPng(mBufferedImage, "raytracing.png");
+
 
         /*
         for(int h = 0; h < mRenderWindow.getHeight(); h++){                                                             //Schleife für Höhe

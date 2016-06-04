@@ -15,11 +15,11 @@ public abstract class Shape extends SceneObject {
         this.material = material;
     }
 
-    public boolean intersect (Ray ray) {
+    public Vec3 intersect (Ray ray) {
 
 
 
-        return false;
+        return new Vec3(0,0,0);
     }
 
     public Vec3 getNormal (Ray ray) {                                                                                   //Methode getNormal

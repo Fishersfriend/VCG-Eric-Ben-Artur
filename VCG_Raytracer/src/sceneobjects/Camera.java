@@ -8,7 +8,7 @@ import java.lang.Math;
 public class Camera extends SceneObject {																				//Klasse Camera erweitert SceneObject
 
 	Matrix4 matrixTransformation;
-																						//Variablen
+
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
 
@@ -23,9 +23,9 @@ public class Camera extends SceneObject {																				//Klasse Camera erw
 	private float focalLength;
 	private float ratio;
 
-  private Window renderWindow;
-  private float viewplaneX;
-  private float viewplaneY;
+  	private Window renderWindow;
+  	private float viewplaneX;
+  	private float viewplaneY;
 
 	public Camera(Window renderWindow, Vec3 cameraPosition, Vec3 lookAt, Vec3 userUpVector, float viewAngle, float focalLength){
 
@@ -37,8 +37,8 @@ public class Camera extends SceneObject {																				//Klasse Camera erw
 			sideVector = viewVector.cross(userUpVector);
 			upVector = sideVector.cross(viewVector);
 
-	    this.renderWindow = renderWindow;
-	    this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
+	   	 	this.renderWindow = renderWindow;
+	    	this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
 
 			viewplaneHeight = 2 * (float) Math.tan(viewAngle/2);
 			viewplaneWidth = viewplaneHeight * this.ratio;

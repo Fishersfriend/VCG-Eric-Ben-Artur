@@ -19,12 +19,10 @@ public class Intersection {
     private boolean incoming;
     private boolean hit;
 
-    public Intersection (Ray ray, Shape shape) {
+    public Intersection (Ray ray, Shape shape, Vec3 intersectionPoint) {
         this.shape = shape;
         this.inRay = ray;
-        this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
-
-        //System.out.println(intersectionPoint);
+        this.intersectionPoint = intersectionPoint;
     }
 
     public Vec3 getIntersec() {

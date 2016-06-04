@@ -16,6 +16,7 @@ public class Sphere extends Shape {                                             
                                                                                       //Material
     private float radius;                                                                                               //Radius
     private float rQuad;
+    public Vec3 intersectionPoint;
 
     public Sphere (float radius, Vec3 position, Material material) {                                                    //Konstruktor Sphere
 
@@ -33,15 +34,15 @@ public class Sphere extends Shape {                                             
     }
 
     public Vec3 getNormal (Ray ray) {                                                                                   //Methode getNormal
-        Vec3 intersecPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
-
-        return intersecPoint.sub(this.position).normalize();
+        //intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+        //this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+        return intersectionPoint.sub(this.position).normalize();
     }
 
     @Override
-    public boolean intersect(Ray ray) {                                                                                 //Methode intersect
+    public Vec3 intersect(Ray ray) {                                                                                 //Methode intersect
 
-        ray.startPoint = ray.startPoint.sub(this.position);
+        ray.startPoint = this.inverse.multVec3(ray.startPoint,true);
 
         double b = 2 * ray.startPoint.scalar(ray.direction);                                                            //Variablen für DeterminantenTest
 
@@ -52,20 +53,26 @@ public class Sphere extends Shape {                                             
         double t0 = (float) (0.5 * (-b - Math.sqrt(b*b - 4*c)));
 
         double t1 = (float) (0.5 * (-b + Math.sqrt(b*b - 4*c)));
-        ray.startPoint = ray.startPoint.add(this.position);
+        ray.startPoint = this.matrixTransformation.multVec3(ray.startPoint,true);
 
         if (d > 0) {                                                                                                    //Prüfen ob Sphere wichtig für die Szene
             if (t0 > 0 && t1 > 0) {
                 ray.t = (float) Math.min(t0, t1);
-                return true;
+                this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+                //this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+                return intersectionPoint;
             } else if (t0 < 0 && t1 > 0) {
                 ray.t = (float) t1;
-                return true;
+                this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+                //this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+                return intersectionPoint;
             } else if (t0 > 0 && t1 < 0) {
                 ray.t = (float) t0;
-                return true;
-            } else { return false;}
+                this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+                //this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+                return intersectionPoint;
+            } else { return new Vec3(0,0,0);}
         } else
-            return false;
+            return new Vec3(0,0,0);
     }
 }
