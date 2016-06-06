@@ -54,15 +54,15 @@ public class Raytracer {                                                        
         ray.setDirection(camera.windowToViewplane(399, 299));                                                           //setdirection(endPoint)aufrufen
         ray.normalize();                                                                                                //normalze aufrufen
 
-        Sphere sphere = new Sphere(1f, new Vec3(-1f, 0f, 40), phong);                                                     //Kugel erstellen (radius, position Material
+        Sphere sphere = new Sphere(1f, new Vec3(1f, 1f, 40), phong);                                                     //Kugel erstellen (radius, position Material
         Plane topPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), phong);
         Plane bottomPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), phong);                                          //Plane Erstellen (Position,Normal,Farbe)
         Plane leftPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), phong);
         Plane rightPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), phong);
         Plane backPlane = new Plane(new Vec3(0f, 0f, 150f), new Vec3(0, 0f, -1), phong);
 
-        Light light0 = new Light(0, new Vec3(-10, 10, 20), new RgbColor(1f, 1f, 1f), new RgbColor(0.1f, 0.1f, 0.1f));   //Licht Erstellen (type,position,color,ambient)
-        //Light light1 = new Light(0, new Vec3(-4, -5, 30), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f));
+        Light light0 = new Light(0, new Vec3(10, 10, 40), new RgbColor(1f, 1f, 1f), new RgbColor(0f, 0f, 1f));   //Licht Erstellen (type,position,color,ambient)
+        //Light light1 = new Light(0, new Vec3(-10, 0, 30), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(1f, 0f, 0f));
 
         lightList.add(0, light0);
         //lightList.add(1, light1);
@@ -75,7 +75,7 @@ public class Raytracer {                                                        
         shapeList.add(5, sphere);
 
         int intersecShape = 0;
-        Vec3 intersectionPoint;
+        Vec3 intersectionPoint = new Vec3(0,0,0);
         Intersection intersec = null;
         float oldIntersec = 100000000;
 
@@ -112,7 +112,7 @@ public class Raytracer {                                                        
 
                 if(intersec != null){
 
-                  mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(ray), ray.startPoint, lightList, intersec), new Vec2(w, h));
+                  mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(ray,intersectionPoint), ray.startPoint, lightList, intersec), new Vec2(w, h));
 
                 }else{
                   mRenderWindow.setPixel(mBufferedImage, background, new Vec2(w, h));

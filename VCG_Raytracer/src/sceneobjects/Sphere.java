@@ -33,7 +33,7 @@ public class Sphere extends Shape {                                             
 
     }
 
-    public Vec3 getNormal (Ray ray) {                                                                                   //Methode getNormal
+    public Vec3 getNormal (Ray ray,Vec3 intersectionPoint) {                                                                                   //Methode getNormal
         //intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
         //this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
         return intersectionPoint.sub(this.position).normalize();
@@ -53,8 +53,8 @@ public class Sphere extends Shape {                                             
         double t0 = (float) (0.5 * (-b - Math.sqrt(b*b - 4*c)));
 
         double t1 = (float) (0.5 * (-b + Math.sqrt(b*b - 4*c)));
-        ray.startPoint = this.matrixTransformation.multVec3(ray.startPoint,true);
-
+        //ray.startPoint = this.matrixTransformation.multVec3(ray.startPoint,true);
+        ray.startPoint = this.matrixTransformation.multVec3(ray.startPoint, true);
         if (d > 0) {                                                                                                    //Prüfen ob Sphere wichtig für die Szene
             if (t0 > 0 && t1 > 0) {
                 ray.t = (float) Math.min(t0, t1);
@@ -71,8 +71,12 @@ public class Sphere extends Shape {                                             
                 this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
                 //this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
                 return intersectionPoint;
-            } else { return new Vec3(0,0,0);}
-        } else
-            return new Vec3(0,0,0);
+            } else
+            {
+                return new Vec3(0,0,0);
+            }
+        } else {
+            return new Vec3(0, 0, 0);
+        }
     }
 }

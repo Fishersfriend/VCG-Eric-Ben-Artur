@@ -22,7 +22,7 @@ public abstract class Shape extends SceneObject {
         return new Vec3(0,0,0);
     }
 
-    public Vec3 getNormal (Ray ray) {                                                                                   //Methode getNormal
+    public Vec3 getNormal (Ray ray, Vec3 intersectionPoint) {                                                                                   //Methode getNormal
 
         return new Vec3(0,0,0);
     }
