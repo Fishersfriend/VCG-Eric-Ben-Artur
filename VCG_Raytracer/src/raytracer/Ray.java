@@ -16,7 +16,7 @@ public class Ray {																										//Klasse Raytracer
 
 	}
 
-    public Ray(Vec3 startPoint){
+	public Ray(Vec3 startPoint){
 		this.startPoint = startPoint;																					//startpoint übergabe
 		matrixTransformation = new Matrix4();
 		matrixTransformation.translate(startPoint);

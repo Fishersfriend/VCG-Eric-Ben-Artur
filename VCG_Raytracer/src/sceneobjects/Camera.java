@@ -8,7 +8,7 @@ import java.lang.Math;
 public class Camera extends SceneObject {																				//Klasse Camera erweitert SceneObject
 
 	Matrix4 matrixTransformation;
-
+	//Variablen
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
 
@@ -23,54 +23,63 @@ public class Camera extends SceneObject {																				//Klasse Camera erw
 	private float focalLength;
 	private float ratio;
 
-  	private Window renderWindow;
-  	private float viewplaneX;
-  	private float viewplaneY;
+	private Window renderWindow;
+	private float viewplaneX;
+	private float viewplaneY;
 
 	public Camera(Window renderWindow, Vec3 cameraPosition, Vec3 lookAt, Vec3 userUpVector, float viewAngle, float focalLength){
 
-			super(cameraPosition);
+		super(cameraPosition);
 
-			viewVector = lookAt.sub(cameraPosition);
-			viewVector = viewVector.normalize();
-			userUpVector = userUpVector.normalize();
-			sideVector = viewVector.cross(userUpVector);
-			upVector = sideVector.cross(viewVector);
+		viewVector = lookAt.sub(cameraPosition);
+		viewVector = viewVector.normalize();
 
-	   	 	this.renderWindow = renderWindow;
-	    	this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
+		userUpVector = userUpVector.normalize();
 
-			viewplaneHeight = 2 * (float) Math.tan(viewAngle/2);
-			viewplaneWidth = viewplaneHeight * this.ratio;
+		sideVector = viewVector.cross(userUpVector);
+		sideVector = sideVector.normalize();
 
-			this.viewAngle = viewAngle;
-			this.focalLength = focalLength;
-			this.lookAt = lookAt;
-			this.userUpVector = userUpVector;
+		upVector = sideVector.cross(viewVector);
+		upVector = upVector.normalize();
 
-			matrixTransformation = new Matrix4();
-			matrixTransformation.translate(cameraPosition);
+
+		this.renderWindow = renderWindow;
+		this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
+
+		viewplaneHeight = 2 * (float) Math.tan(viewAngle/2);
+		viewplaneWidth = viewplaneHeight * this.ratio;
+
+		this.viewAngle = viewAngle;
+		this.focalLength = focalLength;
+		this.lookAt = lookAt;
+		this.userUpVector = userUpVector;
+
+		//matrixTransformation = new Matrix4();
+		//matrixTransformation.translate(cameraPosition);
 	}
 
-    public Vec3 windowToViewplane(float windowX, float windowY){														//Tranformation Fenster zu Viewplane
-        viewplaneX = ((2*windowX+1f)/(float) renderWindow.getWidth()) -1.0f;
-        viewplaneY = ((2*windowY+1f)/(float) renderWindow.getHeight()) -1.0f;
+	public Vec3 windowToViewplane(int xPixel, int yPixel){
 
-        viewplaneX = viewplaneX*(0.5f*(viewplaneWidth));
-        viewplaneY = viewplaneY*(0.5f*(viewplaneHeight));
+		float xViewplane = (float) (2 * (xPixel + 0.5f)) / (renderWindow.getWidth() - 1) - 1;
+		float yViewplane = (float) (2 * (yPixel + 0.5f)) / (renderWindow.getHeight() - 1) - 1;
 
-        return new Vec3(viewplaneX, viewplaneY, focalLength);
-    }
+		xViewplane = 0.5f * viewplaneWidth * xViewplane;
+		yViewplane = 0.5f * viewplaneHeight * yViewplane;
+
+		Vec3 sidePos 	= sideVector.multScalar(xViewplane);
+		Vec3 upPos		= upVector.multScalar(yViewplane);
+
+		Vec3 viewplanePixel = viewVector.add(sidePos).add(upPos);
+
+		return viewplanePixel;
+	}
 
 	public Vec3 calculateDestinationPoint(){
 
 		return new Vec3(0,0,0);
 	}
 
-	public Vec3 getCameraPosition(){
+	public Vec3 getPosition(){
 		return position;
 	}
-
-
-
 }

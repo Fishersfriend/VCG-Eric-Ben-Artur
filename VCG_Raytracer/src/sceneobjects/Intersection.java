@@ -22,7 +22,9 @@ public class Intersection {
     public Intersection (Ray ray, Shape shape, Vec3 intersectionPoint) {
         this.shape = shape;
         this.inRay = ray;
-        this.intersectionPoint = intersectionPoint;
+        this.intersectionPoint= intersectionPoint;
+        //this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
+        //System.out.println(intersectionPoint);
     }
 
     public Vec3 getIntersec() {
