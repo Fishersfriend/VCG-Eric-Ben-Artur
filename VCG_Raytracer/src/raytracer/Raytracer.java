@@ -20,49 +20,43 @@ package raytracer;
 import ui.Window;
 import utils.*;
 import sceneobjects.*;
-
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.lang.Math.*;
 
-public class Raytracer {                                                                                                //Klasse Raytracer
-
+public class Raytracer {
     private ArrayList<Shape> shapeList = new ArrayList<>();
-    private ArrayList<Light> lightList = new ArrayList<>();                                                             //array für alle Lichter
+    private ArrayList<Light> lightList = new ArrayList<>();
 
     private BufferedImage mBufferedImage;
     private Window mRenderWindow;
-    private RgbColor mBackgroundColor;                                                                                  //Hintergrundfarbe
-    private int maxRecursions;                                                                                          //Rekursionen
+    private RgbColor mBackgroundColor = new RgbColor(0, 0, 0);;
+    private int maxRecursions;
 
-    public Raytracer(Window renderWindow){                                                                              //Konstruktor
+    public Raytracer(Window renderWindow)
+    {
         mBufferedImage = renderWindow.getBufferedImage();
         mRenderWindow = renderWindow;
     }
 
-    public void renderScene() {                                                                                          //Methode renderScene (aufgerufen von Main)
+    public void renderScene() {
         Log.print(this, "Start rendering");
 
-        RgbColor background = new RgbColor(0, 0, 0);                                                                      //setzen der Hintergrundfarbe
-
-        //Kamera erstellen
-        Camera camera = new Camera(mRenderWindow, new Vec3(0, 0f, -15f), new Vec3(0, 0, 0),                              //Kamera erstellen (Position,LookAt,UserUp,
-                new Vec3(0, 1, 0), 1f, 1f);
+        Camera camera = new Camera(mRenderWindow, new Vec3(0, 0f, -15f), new Vec3(0, 0, 0), new Vec3(0, 1, 0), 1f, 1f);
 
         Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.1f, 0.1f, 0.1f), 6);
         Material phong2 = new Material(new RgbColor(0.1f, 0.0f, 0.0f), new RgbColor(0f, 0.0f, 1.0f), new RgbColor(0.0f, 0.0f, 0.3f), 50);
 
-        //Ray ray = new Ray(camera.getPosition());                                                             //Ray erstellen (startPosition)                                                                                              //normalze aufrufen
 
         Sphere sphere1 = new Sphere(1f, new Vec3(-3f, -0f, 0), phong2);
         Sphere sphere2 = new Sphere(1f, new Vec3(3f, -0f, 0), phong2);
         Plane topPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), phong);
-        Plane bottomPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), phong);                                          //Plane Erstellen (Position,Normal,Farbe)
+        Plane bottomPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), phong);
         Plane leftPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), phong);
         Plane rightPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), phong);
         Plane backPlane = new Plane(new Vec3(0f, 0f, 10f), new Vec3(0, 0, -1), phong);
 
-        Light light0 = new Light(0, new Vec3(0, 0.1f, 0), new RgbColor(1f, 1f, 1f), new RgbColor(0.0f, 0.0f, 0.0f));   //Licht Erstellen (type,position,color,ambient)
+        Light light0 = new Light(0, new Vec3(0, 0.1f, 0), new RgbColor(1f, 1f, 1f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light1 = new Light(0, new Vec3(-10, -4, -3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light2 = new Light(0, new Vec3(10, -4, -3), new RgbColor(1f, 0.1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
 
@@ -83,11 +77,11 @@ public class Raytracer {                                                        
         float oldIntersec = 100000000;
         Vec3 intersectionPoint = new Vec3(0,0,0);
 
-        for(int h = 0; h < mRenderWindow.getHeight(); h++){                                                             //Schleife für Höhe
+        for(int h = 0; h < mRenderWindow.getHeight(); h++){
             for(int w = 0; w < mRenderWindow.getWidth(); w++){
 
                 Ray ray = new Ray(camera.getPosition());
-                ray.setDirection(camera.getPosition().add(camera.windowToViewplane(w, h)));                                                     //Strahl durch jeden Pixel
+                ray.setDirection(camera.getPosition().add(camera.windowToViewplane(w, h)));
                 ray.normalize();
 
                 for(int index = 0; index < shapeList.size(); index++){
@@ -110,7 +104,7 @@ public class Raytracer {                                                        
                     mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(ray,intersectionPoint), ray.startPoint, lightList, intersec), new Vec2(w, h));
 
                 }else{
-                    mRenderWindow.setPixel(mBufferedImage, background, new Vec2(w, h));
+                    mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
                 }
 
                 intersecShape = 0;

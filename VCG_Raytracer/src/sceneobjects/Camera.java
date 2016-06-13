@@ -5,10 +5,9 @@ import utils.*;
 import ui.*;
 import java.lang.Math;
 
-public class Camera extends SceneObject {																				//Klasse Camera erweitert SceneObject
+public class Camera extends SceneObject {
 
 	Matrix4 matrixTransformation;
-	//Variablen
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
 

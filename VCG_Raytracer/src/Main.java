@@ -29,35 +29,34 @@ import utils.Log;
 import utils.Vec3;
 import sceneobjects.*;
 
-// Main application class. This is the routine called by the JVM to run the program.
-public class Main {                                                                                                     //Klasse Main
+public class Main {
 
-    static int IMAGE_WIDTH = 800;                                                                                       //Weite und Breite des Bildes
+    static int IMAGE_WIDTH = 800;
     static int IMAGE_HEIGHT = 600;
 
     // Initial method. This is where the show begins.
     public static void main(String[] args){
-        long tStart = System.currentTimeMillis();                                                                       //start Timer
+        long tStart = System.currentTimeMillis();
 
-        Window renderWindow = new Window(IMAGE_WIDTH, IMAGE_HEIGHT);                                                    //Fenster erstellen
+        Window renderWindow = new Window(IMAGE_WIDTH, IMAGE_HEIGHT);
 		
 
-        draw(renderWindow);                                                                                             //draw Methode aufrufen
+        draw(renderWindow);
 
-        renderWindow.setTimeToLabel(String.valueOf(stopTime(tStart)));                                                  //stop Timer
+        renderWindow.setTimeToLabel(String.valueOf(stopTime(tStart)));
     }
 
-    private static void draw(Window renderWindow){                                                                      //Methode draw
-        raytraceScene(renderWindow);                                                                                    //raytraceScene Methode aufrufen
+    private static void draw(Window renderWindow){
+        raytraceScene(renderWindow);
     }
 
-    private static void raytraceScene(Window renderWindow){                                                             //Methode raytraceScene
-        Raytracer raytracer = new Raytracer(renderWindow);                                                              //erstellen neues Raytracer
+    private static void raytraceScene(Window renderWindow){
+        Raytracer raytracer = new Raytracer(renderWindow);
 
-        raytracer.renderScene();                                                                                        //raytracer.renderScene Methode aufrufen
+        raytracer.renderScene();
     }
 
-    private static double stopTime(long tStart){                                                                        //Timer
+    private static double stopTime(long tStart){
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         return tDelta / 1000.0;

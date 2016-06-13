@@ -9,16 +9,16 @@ import java.lang.Math;
 /**
  * Created by PraktikumCG on 03.05.2016.
  */
-public class Sphere extends Shape {                                                                                     //Klasse Sphere erweitert Shape
+public class Sphere extends Shape {
 
     Matrix4 matrixTransformation;
     Matrix4 inverse;
 
-    private float radius;                                                                                               //Radius
+    private float radius;
     private float rQuad;
     public Vec3 intersectionPoint;
 
-    public Sphere (float radius, Vec3 position, Material material) {                                                    //Konstruktor Sphere
+    public Sphere (float radius, Vec3 position, Material material) {
 
         super(position, material);
 
@@ -40,10 +40,10 @@ public class Sphere extends Shape {                                             
     }
 
     @Override
-    public Vec3 intersect(Ray ray) {                                                                                 //Methode intersect
+    public Vec3 intersect(Ray ray) {
         ray.startPoint = this.inverse.multVec3(ray.startPoint,true);
 
-        double b = 2 * ray.startPoint.scalar(ray.direction);                                                            //Variablen für DeterminantenTest
+        double b = 2 * ray.startPoint.scalar(ray.direction);
 
         double c = ray.startPoint.x * ray.startPoint.x + ray.startPoint.y * ray.startPoint.y + ray.startPoint.z * ray.startPoint.z - rQuad;
 
@@ -54,7 +54,7 @@ public class Sphere extends Shape {                                             
         double t1 = (float) (0.5 * (-b + Math.sqrt(b*b - 4*c)));
 
         ray.startPoint = this.matrixTransformation.multVec3(ray.startPoint, true);
-        if (d > 0) {                                                                                                    //Prüfen ob Sphere wichtig für die Szene
+        if (d > 0) {
             if (t0 > 0 && t1 > 0) {
                 ray.t = (float) Math.min(t0, t1);
                 this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
