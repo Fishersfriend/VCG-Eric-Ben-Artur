@@ -42,21 +42,21 @@ public class Raytracer {
     public void renderScene() {
         Log.print(this, "Start rendering");
 
-        Camera camera = new Camera(mRenderWindow, new Vec3(0, 0f, -15f), new Vec3(0, 0, 0), new Vec3(0, 1, 0), 1f, 1f);
+        Camera camera = new Camera(mRenderWindow, new Vec3(0, 0f, -15f), new Vec3(0, 0, 0), new Vec3(0, 1, 0), 0.5f, 1f);
 
         Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.1f, 0.1f, 0.1f), 6);
         Material phong2 = new Material(new RgbColor(0.1f, 0.0f, 0.0f), new RgbColor(0f, 0.0f, 1.0f), new RgbColor(0.0f, 0.0f, 0.3f), 50);
 
 
-        Sphere sphere1 = new Sphere(1f, new Vec3(-3f, -0f, 0), phong2);
-        Sphere sphere2 = new Sphere(1f, new Vec3(3f, -0f, 0), phong2);
+        Sphere sphere1 = new Sphere(1f, new Vec3 (2, 1, -5f), phong2);
+      //  Sphere sphere2 = new Sphere(1f, new Vec3(4f, 2f, 0), phong2);
         Plane topPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), phong);
         Plane bottomPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), phong);
         Plane leftPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), phong);
         Plane rightPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), phong);
         Plane backPlane = new Plane(new Vec3(0f, 0f, 10f), new Vec3(0, 0, -1), phong);
 
-        Light light0 = new Light(0, new Vec3(0, 0.1f, 0), new RgbColor(1f, 1f, 1f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light0 = new Light(0, new Vec3(0, 0.1f, -5), new RgbColor(1f, 1f, 1f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light1 = new Light(0, new Vec3(-10, -4, -3), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light2 = new Light(0, new Vec3(10, -4, -3), new RgbColor(1f, 0.1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
 
@@ -70,19 +70,18 @@ public class Raytracer {
         shapeList.add(3, bottomPlane);
         shapeList.add(4, backPlane);
         shapeList.add(5, sphere1);
-        shapeList.add(6, sphere2);
+      //  shapeList.add(6, sphere2);
 
         int intersecShape = 0;
         Intersection intersec = null;
-        float oldIntersec = 100000000;
-        Vec3 intersectionPoint = new Vec3(0,0,0);
+        float oldIntersec = 10000;
+        Vec3 intersectionPoint;
 
         for(int h = 0; h < mRenderWindow.getHeight(); h++){
             for(int w = 0; w < mRenderWindow.getWidth(); w++){
 
                 Ray ray = new Ray(camera.getPosition());
                 ray.setDirection(camera.getPosition().add(camera.windowToViewplane(w, h)));
-                ray.normalize();
 
                 for(int index = 0; index < shapeList.size(); index++){
 
@@ -101,7 +100,7 @@ public class Raytracer {
 
                 if(intersec != null){
 
-                    mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(ray,intersectionPoint), ray.startPoint, lightList, intersec), new Vec2(w, h));
+                    mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(ray, intersec.getIntersec()), ray.startPoint, lightList, intersec.getIntersec()), new Vec2(w, h));
 
                 }else{
                     mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
@@ -109,7 +108,7 @@ public class Raytracer {
 
                 intersecShape = 0;
                 intersec = null;
-                oldIntersec = 100000000;
+                oldIntersec = 10000;
             }
         }
 

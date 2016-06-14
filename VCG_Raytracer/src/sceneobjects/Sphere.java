@@ -11,71 +11,71 @@ import java.lang.Math;
  */
 public class Sphere extends Shape {
 
-    Matrix4 matrixTransformation;
-    Matrix4 inverse;
-
-    private float radius;
     private float rQuad;
+
     public Vec3 intersectionPoint;
 
     public Sphere (float radius, Vec3 position, Material material) {
 
         super(position, material);
 
-        this.radius = radius;
-
         rQuad = radius*radius;
-        matrixTransformation = new Matrix4();
-        matrixTransformation.scale(radius);
-        matrixTransformation.translate(position);
-        inverse = new Matrix4();
-        inverse = matrixTransformation.invert();
+        matrixTransformation = new Matrix4().scale(radius).translate(position);
 
+        inverse = matrixTransformation.invert();
+        System.out.print(""+inverse.getValueAt(0,0));
     }
 
-    public Vec3 getNormal (Ray ray,Vec3 intersectionPoint) {
-        intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
-        this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
-        return intersectionPoint.sub(this.position).normalize();
+    public Vec3 getNormal (Ray ray, Vec3 intersecPoint) {
+        return intersecPoint.sub(this.position).normalize();
     }
 
     @Override
     public Vec3 intersect(Ray ray) {
-        ray.startPoint = this.inverse.multVec3(ray.startPoint,true);
+        transfStart = ray.startPoint;
+        transfDirect = ray.direction;
 
-        double b = 2 * ray.startPoint.scalar(ray.direction);
+        transfStart = this.inverse.multVec3(transfStart,true);
+        transfDirect = this.inverse.multVec3(transfDirect,false).normalize();
 
-        double c = ray.startPoint.x * ray.startPoint.x + ray.startPoint.y * ray.startPoint.y + ray.startPoint.z * ray.startPoint.z - rQuad;
+        float b = 2 * transfStart.scalar(transfDirect);
 
-        double d = b*b - 4*c;
+        float c = transfStart.scalar(transfStart) - rQuad;
 
-        double t0 = (float) (0.5 * (-b - Math.sqrt(b*b - 4*c)));
+        float d = b*b - 4*c;
 
-        double t1 = (float) (0.5 * (-b + Math.sqrt(b*b - 4*c)));
+        float temp = (float) Math.sqrt(d);
 
-        ray.startPoint = this.matrixTransformation.multVec3(ray.startPoint, true);
+        float t0 = (float) 0.5 * (-b - temp);
+
+        float t1 = (float) 0.5 * (-b + temp);
+
+
         if (d > 0) {
             if (t0 > 0 && t1 > 0) {
-                ray.t = (float) Math.min(t0, t1);
-                this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
-                this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+                ray.t = Math.min(t0, t1);
+                intersectionPoint = transfStart.add(transfDirect.multScalar(ray.t));
+                intersectionPoint = this.matrixTransformation.multVec3(intersectionPoint,true);
                 return intersectionPoint;
             } else if (t0 < 0 && t1 > 0) {
-                ray.t = (float) t1;
-                this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
-                this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+                ray.t = t1;
+                intersectionPoint = transfStart.add(transfDirect.multScalar(ray.t));
+                intersectionPoint = this.matrixTransformation.multVec3(intersectionPoint,true);
                 return intersectionPoint;
             } else if (t0 > 0 && t1 < 0) {
-                ray.t = (float) t0;
-                this.intersectionPoint = ray.startPoint.add(ray.direction.multScalar(ray.t));
-                this.intersectionPoint = this.matrixTransformation.multVec3(this.intersectionPoint,true);
+                ray.t = t0;
+                intersectionPoint = transfStart.add(transfDirect.multScalar(ray.t));
+                intersectionPoint = this.matrixTransformation.multVec3(intersectionPoint,true);
                 return intersectionPoint;
             } else
             {
-                return new Vec3(0,0,0);
+                ray.t = -1;
+                return null;
             }
         } else {
-            return new Vec3(0, 0, 0);
+            ray.t = -1;
+            return null;
         }
     }
+
 }

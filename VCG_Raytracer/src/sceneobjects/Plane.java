@@ -34,7 +34,7 @@ public class Plane extends Shape {
         else
         {
             ray.t = -1;
-            return new Vec3(0,0,0);
+            return null;
         }
     }
 

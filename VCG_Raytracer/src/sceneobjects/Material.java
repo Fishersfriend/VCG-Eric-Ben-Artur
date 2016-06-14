@@ -9,15 +9,14 @@ import java.util.ArrayList;
 public class Material {
 
     private RgbColor ka, kd, ks;
-    private double n;
+    private float n;
 
 
-    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, double shininess) {
-
+    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess) {
         ka = ambient; kd = diffuse; ks = specular; n = shininess;
     }
 
-    public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Intersection intersec) {
+    public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Vec3 intersecPoint) {
 
         float red = 0, green = 0, blue = 0;
         int i;
@@ -25,14 +24,18 @@ public class Material {
         for (i = 0; i < lightList.size(); i++){
 
             Vec3 r = normal.multScalar(2 * normal.scalar(lightList.get(i).getPosition())).sub(lightList.get(i).getPosition()).normalize();
-            Vec3 l = lightList.get(i).getPosition().sub(intersec.getIntersec()).normalize();
-            Vec3 v = cameraPos.sub(intersec.getIntersec()).normalize();
+            Vec3 l = lightList.get(i).getPosition().sub(intersecPoint).normalize();
+            Vec3 v = cameraPos.sub(intersecPoint).normalize();
+            double spec = Math.pow(v.scalar(r), n);
+            float temp = normal.scalar(l);
 
-            red += (float) (lightList.get(i).getAmbient().red() * ka.red() + lightList.get(i).getColor().red() * (kd.red() * normal.scalar(l) + ks.red() * Math.pow(v.scalar(r), n)));
 
-            green += (float) (lightList.get(i).getAmbient().green() * ka.green() + lightList.get(i).getColor().green() * (kd.green() * normal.scalar(l) + ks.green() * Math.pow(v.scalar(r), n)));
+            red += (float) (lightList.get(i).getAmbient().red() * ka.red() + lightList.get(i).getColor().red() * (kd.red() * temp + ks.red() * spec));
 
-            blue += (float) (lightList.get(i).getAmbient().blue() * ka.blue() + lightList.get(i).getColor().blue() * (kd.blue() * normal.scalar(l) + ks.blue() * Math.pow(v.scalar(r), n)));
+            green += (float) (lightList.get(i).getAmbient().green() * ka.green() + lightList.get(i).getColor().green() * (kd.green() * temp + ks.green() * spec));
+
+            blue += (float) (lightList.get(i).getAmbient().blue() * ka.blue() + lightList.get(i).getColor().blue() * (kd.blue() * temp + ks.blue() * spec));
+
 
         }
 

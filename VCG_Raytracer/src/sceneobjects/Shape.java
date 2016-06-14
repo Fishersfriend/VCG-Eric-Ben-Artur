@@ -1,6 +1,7 @@
 package sceneobjects;
 
 import raytracer.Ray;
+import utils.Matrix4;
 import utils.Vec3;
 
 /**
@@ -9,6 +10,8 @@ import utils.Vec3;
 public abstract class Shape extends SceneObject {
 
     public Material material;
+
+
 
     Shape(Vec3 position, Material material){
         super(position);

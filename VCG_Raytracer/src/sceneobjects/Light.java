@@ -5,9 +5,9 @@ import utils.RgbColor;
 import utils.Vec3;
 
 
-public class Light {
+public class Light extends SceneObject {
 
-    Matrix4 matrixTransformation;
+
 
     public static final int POINT = 0;
     public static final int AREA = 1;
@@ -22,8 +22,7 @@ public class Light {
         this.position = position;
         this.color = color;
         this.ambient = ambient;
-        matrixTransformation = new Matrix4();
-        matrixTransformation.translate(position);
+        matrixTransformation = new Matrix4().translate(position);
     }
 
     public RgbColor getColor() {
