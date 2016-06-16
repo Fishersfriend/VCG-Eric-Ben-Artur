@@ -9,6 +9,7 @@ import utils.Vec3;
  */
 public abstract class Shape extends SceneObject {
 
+    //Variablen, die von Kindern von Shape gebracuth werden
     public Material material;
 
 

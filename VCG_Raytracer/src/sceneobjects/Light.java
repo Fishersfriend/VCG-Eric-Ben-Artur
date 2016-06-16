@@ -17,6 +17,7 @@ public class Light extends SceneObject {
     private RgbColor color;
     private RgbColor ambient;
 
+    // Setzen der Werte auf ÜbergabeWerte
     public Light (int lightType, Vec3 position, RgbColor color, RgbColor ambient) {
         this.lightType = lightType;
         this.position = position;

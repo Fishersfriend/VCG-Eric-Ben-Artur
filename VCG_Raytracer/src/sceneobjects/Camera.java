@@ -7,6 +7,7 @@ import java.lang.Math;
 
 public class Camera extends SceneObject {
 
+	//erstellen der TransformationsMatrix
 	Matrix4 matrixTransformation;
 	private Vec3 lookAt;
 	private Vec3 userUpVector;
@@ -26,6 +27,7 @@ public class Camera extends SceneObject {
 	private float viewplaneX;
 	private float viewplaneY;
 
+	//Konstruktor
 	public Camera(Window renderWindow, Vec3 cameraPosition, Vec3 lookAt, Vec3 userUpVector, float viewAngle, float focalLength){
 
 		super(cameraPosition);
@@ -53,10 +55,11 @@ public class Camera extends SceneObject {
 		this.lookAt = lookAt;
 		this.userUpVector = userUpVector;
 
-		//matrixTransformation = new Matrix4();
-		//matrixTransformation.translate(cameraPosition);
+		matrixTransformation = new Matrix4();
+		matrixTransformation.translate(cameraPosition);
 	}
 
+	//Transformierung zur Viewplane
 	public Vec3 windowToViewplane(int xPixel, int yPixel){
 
 		float xViewplane = (float) (2 * (xPixel + 0.5f)) / (renderWindow.getWidth() - 1) - 1;
