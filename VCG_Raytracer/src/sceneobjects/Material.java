@@ -21,18 +21,23 @@ public class Material {
     public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Vec3 intersecPoint) {
 
         float red = 0, green = 0, blue = 0;
+        double spec;
         int i;
 
         for (i = 0; i < lightList.size(); i++){
 
-            //Berechnung R- Vektor und normalizierung
-            Vec3 r = normal.multScalar(2 * normal.scalar(lightList.get(i).getPosition())).sub(lightList.get(i).getPosition()).normalize();
             //Berechnung Lightvektor und normalizierung
             Vec3 l = lightList.get(i).getPosition().sub(intersecPoint).normalize();
             //Berechnung ViewerVektor und normalizierung
             Vec3 v = cameraPos.sub(intersecPoint).normalize();
+            //Berechnung R- Vektor und normalizierung
+            Vec3 r =  normal.multScalar((normal.scalar(l)) * 2).sub(l).normalize();
 
-            double spec = Math.pow(v.scalar(r), n);
+            float vnScalar = v.scalar(r);
+            if (vnScalar > 0)
+                spec = Math.pow(vnScalar, n);
+            else
+                spec = 0;
             float temp = normal.scalar(l);
 
             //Berechung für rgb mit errechneten Vektoren
@@ -41,7 +46,6 @@ public class Material {
             green += (float) (lightList.get(i).getAmbient().green() * ka.green() + lightList.get(i).getColor().green() * (kd.green() * temp + ks.green() * spec));
 
             blue += (float) (lightList.get(i).getAmbient().blue() * ka.blue() + lightList.get(i).getColor().blue() * (kd.blue() * temp + ks.blue() * spec));
-
 
         }
 
