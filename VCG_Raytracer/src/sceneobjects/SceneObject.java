@@ -21,4 +21,5 @@ public abstract class SceneObject {
 	SceneObject(Vec3 position){
 		this.position = position;
 	}
+
 }

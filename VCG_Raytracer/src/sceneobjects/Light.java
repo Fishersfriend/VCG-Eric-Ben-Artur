@@ -7,8 +7,6 @@ import utils.Vec3;
 
 public class Light extends SceneObject {
 
-
-
     public static final int POINT = 0;
     public static final int AREA = 1;
 
@@ -19,9 +17,10 @@ public class Light extends SceneObject {
 
     // Setzen der Werte auf ÜbergabeWerte
     public Light (int lightType, Vec3 position, RgbColor color, RgbColor ambient) {
+
         this.lightType = lightType;
-        this.position = position;
         this.color = color;
+        this.position = position;
         this.ambient = ambient;
         matrixTransformation = new Matrix4().translate(position);
     }
@@ -30,7 +29,7 @@ public class Light extends SceneObject {
         return color;
     }
 
-    public Vec3 getPosition () {
+    public Vec3 getPosition (){
         return position;
     }
 

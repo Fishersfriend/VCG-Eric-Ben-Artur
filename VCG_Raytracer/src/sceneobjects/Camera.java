@@ -43,7 +43,6 @@ public class Camera extends SceneObject {
 		upVector = sideVector.cross(viewVector);
 		upVector = upVector.normalize();
 
-
 		this.renderWindow = renderWindow;
 		this.ratio = (float) renderWindow.getWidth()/(float) renderWindow.getHeight();
 
@@ -60,6 +59,28 @@ public class Camera extends SceneObject {
 	}
 
 	//Transformierung zur Viewplane
+	/*//////////////////////////////////////////////////////////////////
+	//
+	//  1. Normierung der Übergabeparameter (Windowpixel) auf einen
+	//	Wertebereich zwischen -1 und 1 .
+	//
+	//  2. Berechnung der Pixelposition auf der Viewplane durch
+	//	Multiplikation des normierten Windowpixels mit der Breite und
+	//	Höhe der Viewplane (mal 0.5, da Viewvector auf Mittelpunkt der
+	//	Viewplane gerichtet ist).
+
+	//	3. Multiplikation der jeweiligen Auslenkung in x- und y-
+	// 	Richtung auf der Viewplane mit dem Side- und Up-Vector.
+	//	Dadurch wird "dreidimensionale" Auslenkung vom Kamerapunkt
+	//  aus bestimmt.
+	//
+	//	4. Übersetzung der Pixelposition auf der Viewplane in das
+	// 	globale Koordinatensystem:
+	//		CameraPosition + ViewVector + SidePos (x-Auslenkung der Viewplane)
+	//		CameraPosition + ViewVector + UpPos (y-Auslenkung der Viewplane)
+	//
+	//////////////////////////////////////////////////////////////////*/
+
 	public Vec3 windowToViewplane(int xPixel, int yPixel){
 
 		float xViewplane = (float) (2 * (xPixel + 0.5f)) / (renderWindow.getWidth() - 1) - 1;
@@ -72,6 +93,7 @@ public class Camera extends SceneObject {
 		Vec3 upPos		= upVector.multScalar(yViewplane);
 
 		Vec3 viewplanePixel = viewVector.add(sidePos).add(upPos);
+		viewplanePixel.y = -(viewplanePixel.y);
 
 		return viewplanePixel;
 	}

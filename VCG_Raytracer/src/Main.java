@@ -39,7 +39,6 @@ public class Main {
         long tStart = System.currentTimeMillis();
 
         Window renderWindow = new Window(IMAGE_WIDTH, IMAGE_HEIGHT);
-		
 
         draw(renderWindow);
 
