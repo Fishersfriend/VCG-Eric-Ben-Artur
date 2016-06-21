@@ -19,6 +19,7 @@ public class Intersection {
     private float distance;
     private boolean incoming;
     private boolean hit;
+    public Vec3 inverseDirection;
 
     //erstellen des IntersectionObjekts mit übergebener Shape
     public Intersection (Ray ray, Shape shape, Vec3 intersectionPoint, Vec3 normal) {
@@ -26,7 +27,7 @@ public class Intersection {
         this.inRay = ray;
         this.intersectionPoint = intersectionPoint;
         this.normal = normal;
-        Vec3 inverseDirection = inRay.direction.negate();
+        this.inverseDirection = inRay.direction.negate();
         //System.out.print(normal);
     }
 
@@ -44,8 +45,10 @@ public class Intersection {
 
         //Ref = (normal.multScalar(normal.scalar(inRay.direction)).multScalar(2)).sub(inRay.direction);
 
-        Ref = normal.multScalar(normal.scalar(inRay.direction));
-        Ref = Ref.multScalar(2).sub(inRay.direction);
+        Ref = normal.multScalar(normal.scalar(inverseDirection));
+        //System.out.print(Ref);
+        Ref = Ref.multScalar(2).sub(inverseDirection);
+        //System.out.print(Ref);
 
         return new Ray();
     }

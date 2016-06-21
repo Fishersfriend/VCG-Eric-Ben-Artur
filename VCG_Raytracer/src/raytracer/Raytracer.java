@@ -105,13 +105,17 @@ public class Raytracer {
                         }
                     }
                 }
-                //Schattenberechnung beta//
 
-                if(w == 100 && h == 500){
-                    System.out.println(shadowRay.startPoint);
-                    System.out.println(shadowRay.endPoint);
-                    System.out.println(shadowRay.direction);
-                    System.out.println(intersectionPoint);
+                //Wenn transparent, berechnung der Refracion
+                if(shape.material.transparent != 0)
+                {
+                    intersec.calculateRefractionRay();
+                }
+
+                //Wenn transparent, berechnung der Reflektion
+                if(shape.material.reflection != 0)
+                {
+                    intersec.calculateReflectionRay();
 
                 }
 
@@ -153,7 +157,6 @@ public class Raytracer {
         Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.1f, 0.1f, 0.1f), 6, 0, 0);
         Material phongLeft = new Material(new RgbColor(1f, 0f, 0f), new RgbColor(1f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0);
         Material phongRight = new Material(new RgbColor(0f, 0f, 1f), new RgbColor(0f, 0f, 1f), new RgbColor(0f, 0f, 0f), 0, 0, 0);
-
         Material phongSphere = new Material(new RgbColor(0.1f, 0.0f, 0.0f), new RgbColor(0f, 0.0f, 1.0f), new RgbColor(1f, 1f, 1f), 50, 1, 1);
         //Materialien zur Liste hinzufügen
         materialList.add(0,phong);
