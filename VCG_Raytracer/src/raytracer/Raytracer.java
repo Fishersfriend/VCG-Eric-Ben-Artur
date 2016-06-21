@@ -81,11 +81,11 @@ public class Raytracer {
                     if((primaryRay.t != -1) && (intersec == null)){
                         minIntersec = primaryRay.t;
                         intersecShape = shapeIndex;
-                        intersec = new Intersection(primaryRay, shapeList.get(shapeIndex), intersectionPoint);
+                        intersec = new Intersection(primaryRay, shapeList.get(shapeIndex), intersectionPoint, shapeList.get(shapeIndex).getNormal(primaryRay, intersectionPoint) );
                     }else if((primaryRay.t != -1) && (primaryRay.t < minIntersec) && (intersec != null)){
                         minIntersec = primaryRay.t;
                         intersecShape = shapeIndex;
-                        intersec = new Intersection(primaryRay, shapeList.get(shapeIndex), intersectionPoint);
+                        intersec = new Intersection(primaryRay, shapeList.get(shapeIndex), intersectionPoint, shapeList.get(shapeIndex).getNormal(primaryRay, intersectionPoint));
                     }
                 }
 
@@ -114,6 +114,8 @@ public class Raytracer {
                     System.out.println(intersectionPoint);
 
                 }
+
+
 
                 if(intersec != null){
                     if(isInShade){
@@ -148,22 +150,28 @@ public class Raytracer {
 
     public void createMaterial(){
         //Material erstellen (Ambient, Diffuse, Specular, Shininess)
-        Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.1f, 0.1f, 0.1f), 6);
-        Material phong2 = new Material(new RgbColor(0.1f, 0.0f, 0.0f), new RgbColor(0f, 0.0f, 1.0f), new RgbColor(0.0f, 0.0f, 0.3f), 50);
+        Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.5f, 0.5f, 0.5f), new RgbColor(0.1f, 0.1f, 0.1f), 6, 0, 0);
+        Material phongLeft = new Material(new RgbColor(1f, 0f, 0f), new RgbColor(1f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0);
+        Material phongRight = new Material(new RgbColor(0f, 0f, 1f), new RgbColor(0f, 0f, 1f), new RgbColor(0f, 0f, 0f), 0, 0, 0);
+
+        Material phongSphere = new Material(new RgbColor(0.1f, 0.0f, 0.0f), new RgbColor(0f, 0.0f, 1.0f), new RgbColor(1f, 1f, 1f), 50, 1, 1);
         //Materialien zur Liste hinzufügen
         materialList.add(0,phong);
-        materialList.add(1,phong2);
+        materialList.add(1,phongSphere);
+        materialList.add(2,phongLeft);
+        materialList.add(3,phongRight);
+
     }
 
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
         Sphere sphere1 = new Sphere(1f, new Vec3 (2, -3, -3f), materialList.get(1));
-        Sphere sphere2 = new Sphere(1f, new Vec3(-3f, -3, 0), materialList.get(1));
+        Sphere sphere2 = new Sphere(1f, new Vec3(-3f, -3, -3), materialList.get(1));
         //Ebene erstellen (Postiton, Normale, Material)
         Plane topPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), materialList.get(0));
         Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), materialList.get(0));
-        Plane leftPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), materialList.get(0));
-        Plane rightPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), materialList.get(0));
+        Plane rightPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), materialList.get(3));
+        Plane leftPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), materialList.get(2));
         Plane backPlane = new Plane(new Vec3(0f, 0f, 10f), new Vec3(0, 0, -1), materialList.get(0));
         //Shapes zur Liste hinzufügen
         shapeList.add(0, leftPlane);

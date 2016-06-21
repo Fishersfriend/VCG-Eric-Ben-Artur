@@ -10,13 +10,17 @@ public class Material {
 
     private RgbColor ka, kd, ks;
     private float n;
+    public float transparent;
+    public float reflection;
 
     //Konstruktor
-    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess) {
+    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess, float transparent, float reflection) {
         ka = ambient; kd = diffuse; ks = specular; n = shininess;
+        this.transparent = transparent;
+        this.reflection = reflection;
     }
 
-    //Frunktion Shade
+    //Funktion Shade
     //[Setzen der Übergabe-werte und Berechnung von Ambiente, Diffus und Spekular für jedes Licht in LichtListe]
     public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Vec3 intersecPoint) {
 

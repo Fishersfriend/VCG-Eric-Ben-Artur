@@ -19,7 +19,6 @@ public class Sphere extends Shape {
     public Sphere (float radius, Vec3 position, Material material) {
 
         super(position, material);
-
         //Radius quadrieren für spätere berechnung
         rQuad = radius*radius;
         //TransformationsMatrix erstellen
@@ -45,6 +44,7 @@ public class Sphere extends Shape {
         //Werte des Rays übergeben und in HilfsVariablen speichern
         transfStart = ray.startPoint;
         transfDirect = ray.direction;
+        float t;
 
         //Hilfsvariablen mit Inverse transformieren
         transfStart = this.inverse.multVec3(transfStart,true);
@@ -70,6 +70,9 @@ public class Sphere extends Shape {
                 ray.t = Math.min(t0, t1);
                 intersectionPoint = transfStart.add(transfDirect.multScalar(ray.t));
                 intersectionPoint = this.matrixTransformation.multVec3(intersectionPoint,true);
+                t = intersectionPoint.sub(ray.startPoint).length();
+                ray.t = t;
+
                 return intersectionPoint;
             }
             else if (t0 < 0 && t1 > 0)
@@ -77,6 +80,8 @@ public class Sphere extends Shape {
                 ray.t = t1;
                 intersectionPoint = transfStart.add(transfDirect.multScalar(ray.t));
                 intersectionPoint = this.matrixTransformation.multVec3(intersectionPoint,true);
+                t = intersectionPoint.sub(ray.startPoint).length();
+                ray.t = t;
                 return intersectionPoint;
             }
             else if (t0 > 0 && t1 < 0)
@@ -84,6 +89,8 @@ public class Sphere extends Shape {
                 ray.t = t0;
                 intersectionPoint = transfStart.add(transfDirect.multScalar(ray.t));
                 intersectionPoint = this.matrixTransformation.multVec3(intersectionPoint,true);
+                t = intersectionPoint.sub(ray.startPoint).length();
+                ray.t = t;
                 return intersectionPoint;
             }
             else
