@@ -92,18 +92,31 @@ public class Raytracer {
                 Shape shape = shapeList.get(intersecShape);
 
                 //Schattenberechnung beta//
-                Ray shadowRay = new Ray(intersec.getIntersec());
-                shadowRay.setDirection(lightList.get(0).getPosition());
-                float shadowRayLength = shadowRay.endPoint.sub(shadowRay.startPoint).length();
+                for (int lightIndex = 0; lightIndex < lightList.size(); lightIndex++) {
+                    Ray shadowRay = new Ray(intersec.getIntersec());
+                    shadowRay.setDirection(lightList.get(0).getPosition());
+                    float shadowRayLength = shadowRay.endPoint.sub(shadowRay.startPoint).length();
 
-                for(int shapeIndex = 0; shapeIndex < shapeList.size(); shapeIndex++){
-                    if(shapeIndex != intersecShape){
-                        intersectionPoint = shapeList.get(shapeIndex).intersect(shadowRay);
-                        if((shadowRay.t != -1) && (shadowRay.t < shadowRayLength)){
-                            isInShade = true;
-                            break;
+                    for (int shapeIndex = 0; shapeIndex < shapeList.size(); shapeIndex++) {
+                        if (shapeIndex != intersecShape) {
+                            intersectionPoint = shapeList.get(shapeIndex).intersect(shadowRay);
+                            if ((shadowRay.t != -1) && (shadowRay.t < shadowRayLength)) {
+                                isInShade = true;
+                                break;
+                            }
                         }
                     }
+                }
+
+                if(intersec != null){
+                    if(isInShade){
+                        mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
+                    }else{
+                        mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(primaryRay, intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec()), new Vec2(w, h));
+                    }
+                }
+                else{
+                    mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
                 }
 
                 //Wenn transparent, berechnung der Refracion
@@ -121,16 +134,7 @@ public class Raytracer {
 
 
 
-                if(intersec != null){
-                    if(isInShade){
-                        mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
-                    }else{
-                        mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(primaryRay, intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec()), new Vec2(w, h));
-                    }
-                }
-                else{
-                    mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
-                }
+
 
                 minIntersec = 0;
                 intersecShape = 0;
