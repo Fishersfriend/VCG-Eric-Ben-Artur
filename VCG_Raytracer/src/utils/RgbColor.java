@@ -38,6 +38,14 @@ public class RgbColor {
         clamp();
     }
 
+    public void sub(float r, float g, float b){
+        colors.x -= r;
+        colors.y -= g;
+        colors.z -= g;
+
+        clamp();
+    }
+
     public RgbColor add(RgbColor color){
         return new RgbColor( colors.add(color.colors) );
     }

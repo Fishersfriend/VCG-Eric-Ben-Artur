@@ -67,7 +67,7 @@ public class Raytracer {
         Vec3 intersectionPoint = null;
         Vec3 intersectionPointShade = null;
         Intersection intersec = null;
-        boolean isInShade = false;
+        int shadeCount = 0;
 
         for(int h = 0; h < mRenderWindow.getHeight(); h++){
             for(int w = 0; w < mRenderWindow.getWidth(); w++){
@@ -90,29 +90,19 @@ public class Raytracer {
                 }
 
                 Shape shape = shapeList.get(intersecShape);
-
-                //Schattenberechnung beta//
-                for (int lightIndex = 0; lightIndex < lightList.size(); lightIndex++) {
-                    Ray shadowRay = new Ray(intersec.getIntersec());
-                    shadowRay.setDirection(lightList.get(0).getPosition());
-                    float shadowRayLength = shadowRay.endPoint.sub(shadowRay.startPoint).length();
-
-                    for (int shapeIndex = 0; shapeIndex < shapeList.size(); shapeIndex++) {
-                        if (shapeIndex != intersecShape) {
-                            intersectionPoint = shapeList.get(shapeIndex).intersect(shadowRay);
-                            if ((shadowRay.t != -1) && (shadowRay.t < shadowRayLength)) {
-                                isInShade = true;
-                                break;
-                            }
-                        }
-                    }
-                }
+                shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
 
                 if(intersec != null){
-                    if(isInShade){
-                        mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
-                    }else{
+                    if(shadeCount == 0){
                         mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(primaryRay, intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec()), new Vec2(w, h));
+                    }else{
+                        RgbColor shade = shape.material.shade(shape.getNormal(primaryRay, intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec());
+
+                        for(int i = 0; i < shadeCount; i++){
+                            shade.sub(0.1f, 0.1f, 0.1f);
+                        }
+
+                        mRenderWindow.setPixel(mBufferedImage, shade, new Vec2(w, h));
                     }
                 }
                 else{
@@ -132,15 +122,11 @@ public class Raytracer {
 
                 }
 
-
-
-
-
                 minIntersec = 0;
                 intersecShape = 0;
                 intersectionPoint = null;
                 intersec = null;
-                isInShade = false;
+                shadeCount = 0;
             }
         }
 
@@ -173,7 +159,7 @@ public class Raytracer {
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
         Sphere sphere1 = new Sphere(1f, new Vec3 (2, -3, -3f), materialList.get(1));
-        Sphere sphere2 = new Sphere(1f, new Vec3(-3f, -3, -3), materialList.get(1));
+        Sphere sphere2 = new Sphere(1f, new Vec3(-2.5f, -3, -1), materialList.get(1));
         //Ebene erstellen (Postiton, Normale, Material)
         Plane topPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), materialList.get(0));
         Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), materialList.get(0));
@@ -192,16 +178,31 @@ public class Raytracer {
 
     public void createLight(){
         //Licht erstellen (Lichtart, Position, Farbe, Ambient-Farbe)
-        Light light0 = new Light(0, new Vec3(0, 3.9f, -5f), new RgbColor(1f, 1f, 1f), new RgbColor(0.0f, 0.0f, 0.0f));
-        //Light light1 = new Light(0, new Vec3(0, -3.9f, 5), new RgbColor(0.1f, 1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light0 = new Light(0, new Vec3(3f, 3.9f, 5f), new RgbColor(0.8f, 0.8f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light1 = new Light(0, new Vec3(-3f, 3.9f, 5f), new RgbColor(0.8f, 0.8f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light2 = new Light(0, new Vec3(10, -4, -3), new RgbColor(1f, 0.1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Ligts zur Liste hinzugen
         lightList.add(0, light0);
-        //lightList.add(1, light1);
+        lightList.add(1, light1);
         //lightList.add(2, light2);
     }
 
+    public int calculateShadow(int shadeCount, Intersection intersec, Vec3 intersecP, int intersecShape){
+        for (int lightIndex = 0; lightIndex < lightList.size(); lightIndex++) {
+            Ray shadowRay = new Ray(intersec.getIntersec());
+            shadowRay.setDirection(lightList.get(lightIndex).getPosition());
+            float shadowRayLength = shadowRay.endPoint.sub(shadowRay.startPoint).length();
 
+            for(int shapeIndex = 0; shapeIndex < shapeList.size(); shapeIndex++){
+                if(shapeIndex != intersecShape){
+                    intersecP = shapeList.get(shapeIndex).intersect(shadowRay);
+                    if((shadowRay.t != -1) && (shadowRay.t < shadowRayLength)){
+                        shadeCount++;
+                    }
+                }
+            }
+        }
 
-
+        return shadeCount;
+    }
 }
