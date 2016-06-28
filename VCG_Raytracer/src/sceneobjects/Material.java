@@ -1,5 +1,7 @@
 package sceneobjects;
 
+import raytracer.Ray;
+import raytracer.Raytracer;
 import utils.RgbColor;
 import utils.Vec3;
 import sceneobjects.*;
@@ -11,18 +13,39 @@ public class Material {
     private RgbColor ka, kd, ks;
     private float n;
     public float transparent;
-    public float reflection;
+    private float reflection;
+    private Raytracer raytracer;
 
     //Konstruktor
-    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess, float transparent, float reflection) {
+    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess, float transparent, float reflection, Raytracer raytracer) {
         ka = ambient; kd = diffuse; ks = specular; n = shininess;
         this.transparent = transparent;
         this.reflection = reflection;
+        this.raytracer = raytracer;
     }
 
     //Funktion Shade
     //[Setzen der Übergabe-werte und Berechnung von Ambiente, Diffus und Spekular für jedes Licht in LichtListe]
     public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Vec3 intersecPoint) {
+
+
+        if(reflection != 0 && raytracer.maxRecursions > raytracer.currentRecursions)
+        {
+            raytracer.currentRecursions++;
+            Vec3 v = cameraPos.sub(intersecPoint).normalize();
+            Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v).normalize();
+
+            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.00001f)), r);
+
+            Shape shape = raytracer.intersectLoop(reflecRay);
+
+            if (shape != null) {
+               return shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
+
+            }
+        }
+
+
 
         float red = 0, green = 0, blue = 0;
         double spec;

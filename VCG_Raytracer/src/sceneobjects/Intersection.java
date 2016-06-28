@@ -6,6 +6,8 @@ import sceneobjects.Sphere;
 import utils.Vec3;
 import raytracer.*;
 
+import java.util.ArrayList;
+
 /**
  * Created by PraktikumCG on 03.05.2016.
  */
@@ -37,21 +39,6 @@ public class Intersection {
         return intersectionPoint;
     }
 
-    //Funktion ReflectionRay
-    //[Berechnung des ReflexionsStrahl]
-    public Ray calculateReflectionRay()
-    {
-        Vec3 Ref;
-
-        //Ref = (normal.multScalar(normal.scalar(inRay.direction)).multScalar(2)).sub(inRay.direction);
-
-        Ref = normal.multScalar(normal.scalar(inverseDirection));
-        //System.out.print(Ref);
-        Ref = Ref.multScalar(2).sub(inverseDirection);
-        //System.out.print(Ref);
-
-        return new Ray();
-    }
 
     //Funktion RefraktionRay
     //[Berechnung des RefraktionsStrahl]

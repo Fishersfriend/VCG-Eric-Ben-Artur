@@ -20,6 +20,10 @@ public class Ray {
 	public Ray(Vec3 startPoint){
 		this.startPoint = startPoint;
 	}
+	public Ray(Vec3 startPoint, Vec3 direction){
+		this.startPoint = startPoint;
+		this.direction = direction;
+	}
 
 	//Berechnung der Richtung des Strahles
 	//[Endpoint auf SichtEbene - StartVektor]

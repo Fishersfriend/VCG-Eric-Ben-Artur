@@ -22,14 +22,14 @@ public class Sphere extends Shape {
         //Radius quadrieren für spätere berechnung
         rQuad = radius*radius;
         //TransformationsMatrix erstellen
-        matrixTransformation = new Matrix4().scale(radius).translate(position);
+        matrixTransformation = new Matrix4().translate(position);
         //Inverse Erstellen
         inverse = matrixTransformation.invert();
         //System.out.print(""+inverse.getValueAt(0,0));
     }
 
     //Berechnung und Rückgabe der Normalen
-    public Vec3 getNormal (Ray ray, Vec3 intersecPoint) {
+    public Vec3 getNormal (Vec3 intersecPoint) {
         return intersecPoint.sub(this.position).normalize();
     }
 

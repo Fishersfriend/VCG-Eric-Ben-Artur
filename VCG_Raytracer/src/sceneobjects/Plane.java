@@ -56,7 +56,7 @@ public class Plane extends Shape {
     }
 
     //Funktion um Normale auszugeben
-    public Vec3 getNormal (Ray ray, Vec3 intersectionPoint) {
+    public Vec3 getNormal (Vec3 intersectionPoint) {
         return normal;
     }
 }

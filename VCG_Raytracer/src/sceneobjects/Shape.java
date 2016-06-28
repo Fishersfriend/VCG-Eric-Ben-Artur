@@ -11,7 +11,7 @@ public abstract class Shape extends SceneObject {
 
     //Variablen, die von Kindern von Shape gebraucht werden
     public Material material;
-
+    public Intersection intersection;
 
 
     Shape(Vec3 position, Material material){
@@ -26,7 +26,7 @@ public abstract class Shape extends SceneObject {
         return new Vec3(0,0,0);
     }
 
-    public Vec3 getNormal (Ray ray, Vec3 intersectionPoint) {
+    public Vec3 getNormal (Vec3 intersectionPoint) {
 
         return new Vec3(0,0,0);
     }
