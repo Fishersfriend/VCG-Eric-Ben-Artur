@@ -42,7 +42,7 @@ public class Raytracer {
 
     //Hintergrundfarbe
     private RgbColor mBackgroundColor = new RgbColor(0, 0, 0);
-    public final int maxRecursions = 3;
+    public final int maxRecursions = 10;
     public int currentRecursions = 0;
 
     float minIntersec = 0;
@@ -97,9 +97,8 @@ public class Raytracer {
 
                       }else{
                           shadeArr[i] = shapeArr[i].material.shade(shapeArr[i].getNormal(intersec.getIntersec()), aliasRay[i].startPoint, lightList, intersec.getIntersec());
-
                           for(int shadeIndex = 0; shadeIndex < shadeCount; shadeIndex++){
-                              shadeArr[shadeIndex].sub(0.1f, 0.1f, 0.1f);
+                            shadeArr[i].sub(0.1f, 0.1f, 0.1f);
                           }
                       }
                   }
@@ -128,7 +127,7 @@ public class Raytracer {
                         RgbColor shade = shape.material.shade(shape.getNormal(intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec());
 
                         for(int i = 0; i < shadeCount; i++){
-                            shade.sub(0.1f, 0.1f, 0.1f);
+                            shade.sub(0.3f, 0.3f, 0.3f);
                         }
 
                         mRenderWindow.setPixel(mBufferedImage, shade, new Vec2(w, h));
@@ -162,18 +161,20 @@ public class Raytracer {
         Material phongLeft = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.8f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongRight = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.5f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1, 1f, this);
+        Material phongSphere2 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.0f, 0.8f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 6, 0, 0, this);
         //Materialien zur Liste hinzufügen
         materialList.add(0,phong);
         materialList.add(1,phongSphere);
         materialList.add(2,phongLeft);
         materialList.add(3,phongRight);
+        materialList.add(4,phongSphere2);
 
     }
 
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
-        Sphere sphere1 = new Sphere(2f, new Vec3 (2, 0, -20f), materialList.get(1));
-        Sphere sphere2 = new Sphere(1f, new Vec3(-2.5f, -3, -1), materialList.get(1));
+        Sphere sphere1 = new Sphere(1f, new Vec3 (1, -3, 3f), materialList.get(1));
+        Sphere sphere2 = new Sphere(1f, new Vec3(-1.5f, -3, -1), materialList.get(4));
         //Ebene erstellen (Postiton, Normale, Material)
         Plane topPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), materialList.get(0));
         Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), materialList.get(0));
@@ -192,12 +193,12 @@ public class Raytracer {
 
     public void createLight(){
         //Licht erstellen (Lichtart, Position, Farbe, Ambient-Farbe)
-        Light light0 = new Light(0, new Vec3(0f, 0f, -6), new RgbColor(0.8f, 0.8f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
-       // Light light1 = new Light(0, new Vec3(-3f, 3.9f, -5f), new RgbColor(0.8f, 0.8f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light0 = new Light(0, new Vec3(3f, 3.9f, -5), new RgbColor(0.4f, 0.4f, 0.4f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light1 = new Light(0, new Vec3(-3f, 3.9f, -5f), new RgbColor(0.4f, 0.4f, 0.4f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light2 = new Light(0, new Vec3(10, -4, -3), new RgbColor(1f, 0.1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Ligts zur Liste hinzugen
         lightList.add(0, light0);
-      //  lightList.add(1, light1);
+        lightList.add(1, light1);
         //lightList.add(2, light2);
     }
 
