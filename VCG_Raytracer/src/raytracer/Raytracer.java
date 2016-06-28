@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.lang.Math.*;
 
 public class Raytracer {
+    public static boolean ANTI_ALIASING = true;
 
     //erstellen der Shape-Array-Liste, die alle Objekte beinhaltet
     private ArrayList<Shape> shapeList = new ArrayList<>();
@@ -50,6 +51,8 @@ public class Raytracer {
     Vec3 intersectionPointShade = null;
     Intersection intersec = null;
     int shadeCount = 0;
+
+    int aliasingDepth = 4;
 
     //Konstruktor
     public Raytracer(Window renderWindow)
@@ -74,10 +77,48 @@ public class Raytracer {
         for(int h = 0; h < mRenderWindow.getHeight(); h++){
             for(int w = 0; w < mRenderWindow.getWidth(); w++){
 
-                Ray primaryRay = new Ray(camera.getPosition());
+              Ray[] aliasRay = new Ray[aliasingDepth];
+              Shape[] shapeArr = new Shape[aliasingDepth];
+
+              Ray primaryRay = new Ray();
+              Shape shape = null;
+
+              if(ANTI_ALIASING){
+                aliasRay = calculateAntiAliasing(w, h, camera);
+                RgbColor[] shadeArr = new RgbColor[aliasingDepth];
+
+                for(int i = 0; i < aliasingDepth; i++){
+                  shapeArr[i] = intersectLoop(aliasRay[i]);
+                  shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
+
+                  if(intersec != null){
+                      if(shadeCount == 0){
+                          shadeArr[i] = shapeArr[i].material.shade(shapeArr[i].getNormal(intersec.getIntersec()), aliasRay[i].startPoint, lightList, intersec.getIntersec());
+
+                      }else{
+                          shadeArr[i] = shapeArr[i].material.shade(shapeArr[i].getNormal(intersec.getIntersec()), aliasRay[i].startPoint, lightList, intersec.getIntersec());
+
+                          for(int shadeIndex = 0; shadeIndex < shadeCount; shadeIndex++){
+                              shadeArr[shadeIndex].sub(0.1f, 0.1f, 0.1f);
+                          }
+                      }
+                  }
+                  else{
+                      mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
+                  }
+
+                  currentRecursions = 0;
+                }
+
+                mRenderWindow.setPixel(mBufferedImage, RgbColor.calculateAverage(shadeArr), new Vec2(w, h));
+
+
+
+              }else{
+                primaryRay = new Ray(camera.getPosition());
                 primaryRay.setDirection(camera.getPosition().add(camera.windowToViewplane(w, h)));
 
-                Shape shape = intersectLoop(primaryRay);
+                shape = intersectLoop(primaryRay);
                 shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
 
                 if(intersec != null){
@@ -96,8 +137,11 @@ public class Raytracer {
                 else{
                     mRenderWindow.setPixel(mBufferedImage, mBackgroundColor, new Vec2(w, h));
                 }
+
                 currentRecursions = 0;
-            }
+              }
+
+          }
         }
 
         //Speichern des Bildes
@@ -200,5 +244,21 @@ public class Raytracer {
         }
 
         return shapeList.get(intersecShape);
+    }
+
+    public Ray[] calculateAntiAliasing(float currXpixel, float currYpixel, Camera cam){
+        Ray[] aliasRay = new Ray[aliasingDepth];
+
+        for(int i = 0; i < aliasingDepth; i++){
+          aliasRay[i] = new Ray(cam.getPosition());
+
+        }
+
+        aliasRay[0].setDirection(cam.getPosition().add(cam.windowToViewplane(currXpixel-0.250f, currYpixel-0.250f)));
+        aliasRay[1].setDirection(cam.getPosition().add(cam.windowToViewplane(currXpixel-0.250f, currYpixel+0.250f)));
+        aliasRay[2].setDirection(cam.getPosition().add(cam.windowToViewplane(currXpixel+0.250f, currYpixel-0.250f)));
+        aliasRay[3].setDirection(cam.getPosition().add(cam.windowToViewplane(currXpixel+0.250f, currYpixel+0.250f)));
+
+        return aliasRay;
     }
 }

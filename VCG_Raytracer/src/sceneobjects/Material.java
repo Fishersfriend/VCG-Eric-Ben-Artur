@@ -79,7 +79,7 @@ public class Material {
         if(reflection != 0 && raytracer.maxRecursions > raytracer.currentRecursions)
         {
             raytracer.currentRecursions++;
-            Vec3 v = intersecPoint.sub(cameraPos).normalize();
+            Vec3 v = cameraPos.sub(intersecPoint).normalize();
             Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v);
             if (v.length() > 1.001f) {
                 System.out.print(normal+"\n");

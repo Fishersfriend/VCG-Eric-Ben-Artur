@@ -81,7 +81,7 @@ public class Camera extends SceneObject {
 	//
 	//////////////////////////////////////////////////////////////////*/
 
-	public Vec3 windowToViewplane(int xPixel, int yPixel){
+	public Vec3 windowToViewplane(float xPixel, float yPixel){
 
 		float xViewplane = (float) (2 * (xPixel + 0.5f)) / (renderWindow.getWidth() - 1) - 1;
 		float yViewplane = (float) (2 * (yPixel + 0.5f)) / (renderWindow.getHeight() - 1) - 1;

@@ -82,4 +82,22 @@ public class RgbColor {
     public boolean equals(RgbColor inColor){
         return inColor.red() == this.red() && inColor.green() == this.green() && inColor.blue() == this.blue();
     }
+
+    public static RgbColor calculateAverage(RgbColor[] colorArr){
+      float red = 0;
+      float green = 0;
+      float blue = 0;
+
+      for(int i = 0; i < 4; i++){
+        red += colorArr[i].red();
+        green += colorArr[i].green();
+        blue += colorArr[i].blue();
+      }
+
+      red = red/colorArr.length;
+      green = green/colorArr.length;
+      blue = blue/colorArr.length;
+
+      return new RgbColor(red, green, blue);
+    }
 }
