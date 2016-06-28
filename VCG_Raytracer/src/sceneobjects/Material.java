@@ -15,6 +15,7 @@ public class Material {
     public float transparent;
     private float reflection;
     private Raytracer raytracer;
+    private float phongCoeff;
 
     //Konstruktor
     public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess, float transparent, float reflection, Raytracer raytracer) {
@@ -22,6 +23,12 @@ public class Material {
         this.transparent = transparent;
         this.reflection = reflection;
         this.raytracer = raytracer;
+        if (reflection > 1) {
+            this.reflection = 1;
+        } else if (reflection < 0) {
+            this.reflection = 0;
+        }
+        phongCoeff = 1 - this.reflection;
     }
 
     //Funktion Shade
@@ -29,53 +36,65 @@ public class Material {
     public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Vec3 intersecPoint) {
 
 
-        if(reflection != 0 && raytracer.maxRecursions > raytracer.currentRecursions)
-        {
-            raytracer.currentRecursions++;
-            Vec3 v = cameraPos.sub(intersecPoint).normalize();
-            Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v).normalize();
-
-            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.00001f)), r);
-
-            Shape shape = raytracer.intersectLoop(reflecRay);
-
-            if (shape != null) {
-               return shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
-
-            }
-        }
 
 
 
         float red = 0, green = 0, blue = 0;
         double spec;
         int i;
+        RgbColor reflecColor = new RgbColor(0,0,0);
 
         for (i = 0; i < lightList.size(); i++){
 
-            //Berechnung Lightvektor und normalizierung
-            Vec3 l = lightList.get(i).getPosition().sub(intersecPoint).normalize();
-            //Berechnung ViewerVektor und normalizierung
-            Vec3 v = cameraPos.sub(intersecPoint).normalize();
-            //Berechnung R- Vektor und normalizierung
-            Vec3 r =  normal.multScalar((normal.scalar(l)) * 2).sub(l).normalize();
+            if (reflection < 1) {
+                //Berechnung Lightvektor und normalizierung
+                Vec3 l = lightList.get(i).getPosition().sub(intersecPoint).normalize();
+                //Berechnung ViewerVektor und normalizierung
+                Vec3 v = cameraPos.sub(intersecPoint).normalize();
+                //Berechnung R- Vektor und normalizierung
+                Vec3 r = normal.multScalar((normal.scalar(l)) * 2).sub(l).normalize();
 
-            float vnScalar = v.scalar(r);
-            if (vnScalar > 0)
-                spec = Math.pow(vnScalar, n);
-            else
-                spec = 0;
-            float temp = normal.scalar(l);
+                float vnScalar = v.scalar(r);
+                if (vnScalar > 0)
+                    spec = Math.pow(vnScalar, n);
+                else
+                    spec = 0;
+                float temp = normal.scalar(l);
+                if (temp > 1)
+                    temp = 1;
+                else if (temp < 0)
+                    temp = 0;
 
-            //Berechung für rgb mit errechneten Vektoren
-            red += (float) (lightList.get(i).getAmbient().red() * ka.red() + lightList.get(i).getColor().red() * (kd.red() * temp + ks.red() * spec));
+                //Berechung für rgb mit errechneten Vektoren
+                red += (float) (lightList.get(i).getAmbient().red() * ka.red() + lightList.get(i).getColor().red() * (kd.red() * temp + ks.red() * spec));
 
-            green += (float) (lightList.get(i).getAmbient().green() * ka.green() + lightList.get(i).getColor().green() * (kd.green() * temp + ks.green() * spec));
+                green += (float) (lightList.get(i).getAmbient().green() * ka.green() + lightList.get(i).getColor().green() * (kd.green() * temp + ks.green() * spec));
 
-            blue += (float) (lightList.get(i).getAmbient().blue() * ka.blue() + lightList.get(i).getColor().blue() * (kd.blue() * temp + ks.blue() * spec));
+                blue += (float) (lightList.get(i).getAmbient().blue() * ka.blue() + lightList.get(i).getColor().blue() * (kd.blue() * temp + ks.blue() * spec));
+
+            }
 
         }
 
-        return new RgbColor(red,green,blue);
+        if(reflection != 0 && raytracer.maxRecursions > raytracer.currentRecursions)
+        {
+            raytracer.currentRecursions++;
+            Vec3 v = intersecPoint.sub(cameraPos).normalize();
+            Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v);
+            if (v.length() > 1.001f) {
+                System.out.print(normal+"\n");
+            }
+
+            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.1f)), r);
+
+            Shape shape = raytracer.intersectLoop(reflecRay);
+
+            if (shape != null) {
+                reflecColor = shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
+            }
+        }
+
+
+        return new RgbColor(red*phongCoeff + reflecColor.red()*reflection, green*phongCoeff + reflecColor.green()*reflection, blue*phongCoeff + reflecColor.blue()*reflection);
     }
 }

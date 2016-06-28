@@ -41,7 +41,7 @@ public class Raytracer {
 
     //Hintergrundfarbe
     private RgbColor mBackgroundColor = new RgbColor(0, 0, 0);
-    public final int maxRecursions = 2000;
+    public final int maxRecursions = 3;
     public int currentRecursions = 0;
 
     float minIntersec = 0;
@@ -114,10 +114,10 @@ public class Raytracer {
 
     public void createMaterial(){
         //Material erstellen (Ambient, Diffuse, Specular, Shininess)
-        Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(1f, 0f, 0f), new RgbColor(0.1f, 0.1f, 0.1f), 6, 0, 0, this);
-        Material phongLeft = new Material(new RgbColor(1f, 0f, 0f), new RgbColor(0f, 1f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
-        Material phongRight = new Material(new RgbColor(0f, 0f, 1f), new RgbColor(0f, 1f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
-        Material phongSphere = new Material(new RgbColor(0.1f, 0.0f, 0.0f), new RgbColor(0f, 0.0f, 1.0f), new RgbColor(1f, 1f, 1f), 5, 1, 1, this);
+        Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.8f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f), 6, 0, 0, this);
+        Material phongLeft = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.8f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
+        Material phongRight = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
+        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.5f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1, 1f, this);
         //Materialien zur Liste hinzufügen
         materialList.add(0,phong);
         materialList.add(1,phongSphere);
@@ -128,7 +128,7 @@ public class Raytracer {
 
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
-        Sphere sphere1 = new Sphere(2f, new Vec3 (2, 0, -3f), materialList.get(1));
+        Sphere sphere1 = new Sphere(2f, new Vec3 (2, 0, -20f), materialList.get(1));
         Sphere sphere2 = new Sphere(1f, new Vec3(-2.5f, -3, -1), materialList.get(1));
         //Ebene erstellen (Postiton, Normale, Material)
         Plane topPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), materialList.get(0));
