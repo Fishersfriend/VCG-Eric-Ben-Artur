@@ -120,9 +120,9 @@ public class Raytracer {
                 shape = intersectLoop(primaryRay);
 
                 if(shape.material.transparent > 0){
-                    Ray refracRay = intersec.calculateRefractionRay((1.0f/1.5f), primaryRay);
+                    Ray refracRay = intersec.calculateRefractionRay((0.8f), primaryRay);
                     shape = intersectLoop(refracRay);
-                    refracRay = intersec.calculateRefractionRay((1.5f/1.0f), refracRay);
+                    refracRay = intersec.calculateRefractionRay((0.9f), refracRay);
                     shape = intersectLoop(refracRay);
                 }
 
