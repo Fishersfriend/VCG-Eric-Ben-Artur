@@ -13,6 +13,7 @@ public class Material {
     private RgbColor ka, kd, ks;
     private float n;
     public float transparent;
+    public String transmissionType;
     private float reflection;
     private Raytracer raytracer;
     private float phongCoeff;
@@ -28,7 +29,31 @@ public class Material {
         } else if (reflection < 0) {
             this.reflection = 0;
         }
+        if (transparent > 1) {
+            this.transparent = 1;
+        } else if (transparent < 0) {
+            this.transparent = 0;
+        }
         phongCoeff = 1 - this.reflection;
+    }
+
+    public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess, float transparent, float reflection, Raytracer raytracer, String transmType) {
+        ka = ambient; kd = diffuse; ks = specular; n = shininess;
+        this.transparent = transparent;
+        this.reflection = reflection;
+        this.raytracer = raytracer;
+        if (reflection > 1) {
+            this.reflection = 1;
+        } else if (reflection < 0) {
+            this.reflection = 0;
+        }
+        if (transparent > 1) {
+            this.transparent = 1;
+        } else if (transparent < 0) {
+            this.transparent = 0;
+        }
+        phongCoeff = 1 - this.reflection;
+        transmissionType = transmType;
     }
 
     //Funktion Shade
@@ -96,5 +121,17 @@ public class Material {
 
 
         return new RgbColor(red*phongCoeff + reflecColor.red()*reflection, green*phongCoeff + reflecColor.green()*reflection, blue*phongCoeff + reflecColor.blue()*reflection);
+    }
+
+    public float getTransmissionType(){
+        if(transmissionType != null){
+            if(transmissionType.equals("Glass")){
+                return (4/7);
+            }else{
+                return (4/7);
+            }
+        }
+
+        return (4/7);
     }
 }
