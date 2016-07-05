@@ -17,6 +17,7 @@ public class Material {
     private float reflection;
     private Raytracer raytracer;
     private float phongCoeff;
+    private int shadeCount = 0;
 
     //Konstruktor
     public Material(RgbColor ambient, RgbColor diffuse, RgbColor specular, float shininess, float transparent, float reflection, Raytracer raytracer) {
@@ -117,6 +118,13 @@ public class Material {
             if (shape != null) {
                 reflecColor = shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
             }
+            shadeCount = 0;
+            shadeCount = raytracer.calculateShadow(shadeCount, shape.intersection, shape.intersection.getIntersec(), -1);
+            System.out.print(shadeCount+"\n");
+            for(int j = 0; j < shadeCount; j++){
+                reflecColor.sub(0.1f, 0.1f, 0.1f);
+            }
+
         }
 
 
