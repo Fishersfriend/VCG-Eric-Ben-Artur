@@ -94,7 +94,6 @@ public class Raytracer {
 
                 for(int i = 0; i < aliasingDepth; i++){
                   shapeArr[i] = intersectLoop(aliasRay[i]);
-                  shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
 
                   if(shapeArr[i].material.transparent > 0){
 
@@ -107,6 +106,8 @@ public class Raytracer {
                           shapeArr[i] = intersectLoop(refracRay[i]);
                       }
                   }
+
+                  shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
 
                   if(intersec != null){
                       if(shadeCount == 0){
@@ -196,7 +197,7 @@ public class Raytracer {
         Material phongLeft = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.8f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongRight = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongBack = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.98f, 0.88f, 0.82f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
-        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1.0f, 0, this, "Water");
+        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1.0f, 0, this, "Glass");
         Material phongSphere2 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.0f, 0.8f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 6, 0, 0, this);
         Material phongSphere3 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 10, 0, 0.0f, this);
         //Materialien zur Liste hinzufügen
