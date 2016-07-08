@@ -119,19 +119,6 @@ public class Material {
             }
         }
 
-
         return new RgbColor(red*phongCoeff + reflecColor.red()*reflection, green*phongCoeff + reflecColor.green()*reflection, blue*phongCoeff + reflecColor.blue()*reflection);
-    }
-
-    public float getTransmissionType(){
-        if(transmissionType != null){
-            if(transmissionType.equals("Glass")){
-                return (4/7);
-            }else{
-                return (4/7);
-            }
-        }
-
-        return (4/7);
     }
 }

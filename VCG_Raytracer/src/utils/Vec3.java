@@ -46,6 +46,10 @@ public class Vec3 {
         return this.x * inputVec.x + this.y * inputVec.y + this.z * inputVec.z;
     }
 
+    public Vec3 divide(float input){
+        return new Vec3(this.x/input, this.y/input, this.z/input);
+    }
+
     public Vec3 multScalar(float value){
         return new Vec3(this.x * value, this.y * value, this.z * value);
     }

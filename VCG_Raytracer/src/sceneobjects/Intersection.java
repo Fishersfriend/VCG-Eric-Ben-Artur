@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Intersection {
 
     private Vec3 intersectionPoint;
-    private Vec3 normal;
+    public Vec3 normal;
     private Ray inRay;
     private Ray outRay;
     private Shape shape;
@@ -42,15 +42,44 @@ public class Intersection {
 
     //Funktion RefraktionRay
     //[Berechnung des RefraktionsStrahl]
-    public Ray calculateRefractionRay (float index, Ray incRay) {
-        float n_dot_i = normal.scalar(incRay.direction);
-        float eta_r = index;
-        float angles = ((eta_r * n_dot_i) - (float) Math.sqrt(1-eta_r*eta_r*(1-n_dot_i*n_dot_i)));
-        Vec3 transmission = normal.multScalar(angles).sub(incRay.direction.multScalar(eta_r));
+    public Ray calculateRefractionRay (String material, Ray incRay, boolean debug) {
+
+        float n1 = 0f;
+        float n2 = 0f;
+
+        if(material.equals("Glass")){
+            n1 = 1.0f;
+            n2 = 1.5f;
+        }
+
+        Vec3 n = normal;
+        Vec3 i = incRay.direction.negate();
+        float eta = (n1/n2);
+        float ca = n.scalar(i);
+        float cb = 1-eta*eta*(1-ca*ca);
+
+        if(cb < 0.0f){
+            cb = 0;
+        }else{
+            cb = (float) Math.sqrt(cb);
+        }
+
+        Vec3 t = n.multScalar(ca).sub(i).multScalar(eta).sub(n.multScalar(cb));
+
+        if(debug){
+            System.out.println();
+            System.out.println("cos(a)                : " + ca);
+            System.out.println("cos(b)                : " + cb);
+            System.out.println("N cos(a)              : " + n.multScalar(ca));
+            System.out.println("N cos(a) - I          : " + n.multScalar(ca).sub(i));
+            System.out.println("(N cos(a) - I)*eta    : " + n.multScalar(ca).sub(i).multScalar(eta));
+            System.out.println("N cos(b)              : " + n.multScalar(cb));
+            System.out.println("T                     : " + n.multScalar(ca).sub(i).multScalar(eta).sub(n.multScalar(cb)));
+        }
 
         Ray transmissionRay = new Ray();
-        transmissionRay.direction = transmission.normalize();
-        transmissionRay.startPoint = intersectionPoint.add(transmissionRay.direction.multScalar(0.001f)).normalize();
+        transmissionRay.direction = t.normalize();
+        transmissionRay.startPoint = intersectionPoint.add(transmissionRay.direction.multScalar(0.001f));
 
         return transmissionRay;
     }
@@ -62,5 +91,9 @@ public class Intersection {
 
     public boolean isOutOfDistance () {
         return true;
+    }
+
+    public Vec3 getNormal () {
+        return normal;
     }
 }

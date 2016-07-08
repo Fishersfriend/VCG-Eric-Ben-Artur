@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.lang.Math.*;
 
 public class Raytracer {
-    public static boolean ANTI_ALIASING = false;
+    public static boolean ANTI_ALIASING = true;
 
     //erstellen der Shape-Array-Liste, die alle Objekte beinhaltet
     private ArrayList<Shape> shapeList = new ArrayList<>();
@@ -41,7 +41,7 @@ public class Raytracer {
     public Window mRenderWindow;
 
     //Hintergrundfarbe
-    private RgbColor mBackgroundColor = new RgbColor(0, 0, 0);
+    private RgbColor mBackgroundColor = new RgbColor(1, 0, 0);
     public final int maxRecursions = 10;
     public int currentRecursions = 0;
 
@@ -85,11 +85,28 @@ public class Raytracer {
 
               if(ANTI_ALIASING){
                 aliasRay = calculateAntiAliasing(w, h, camera);
+                Ray[] refracRay = new Ray[aliasingDepth];
+
+                for(int i = 0; i < aliasingDepth; i++){
+                    refracRay[i] = null;
+                }
                 RgbColor[] shadeArr = new RgbColor[aliasingDepth];
 
                 for(int i = 0; i < aliasingDepth; i++){
                   shapeArr[i] = intersectLoop(aliasRay[i]);
                   shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
+
+                  if(shapeArr[i].material.transparent > 0){
+
+                      refracRay[i] = intersec.calculateRefractionRay("Glass", aliasRay[i], false);
+                      shapeArr[i] = intersectLoop(refracRay[i]);
+
+                      if(intersec != null){
+                          intersec.normal = intersec.normal.negate();
+                          refracRay[i] = intersec.calculateRefractionRay("Glass", refracRay[i], false);
+                          shapeArr[i] = intersectLoop(refracRay[i]);
+                      }
+                  }
 
                   if(intersec != null){
                       if(shadeCount == 0){
@@ -114,23 +131,33 @@ public class Raytracer {
 
 
               }else{
+
                 primaryRay = new Ray(camera.getPosition());
                 primaryRay.setDirection(camera.getPosition().add(camera.windowToViewplane(w, h)));
-
                 shape = intersectLoop(primaryRay);
 
                 if(shape.material.transparent > 0){
-                    Ray refracRay = intersec.calculateRefractionRay((0.8f), primaryRay);
+                    Ray refracRay = null;
+
+                    refracRay = intersec.calculateRefractionRay("Glass", primaryRay, false);
                     shape = intersectLoop(refracRay);
-                    refracRay = intersec.calculateRefractionRay((0.9f), refracRay);
-                    shape = intersectLoop(refracRay);
+
+                    if(intersec != null){
+                        intersec.normal = intersec.normal.negate();
+                        refracRay = intersec.calculateRefractionRay("Glass", refracRay, false);
+                        shape = intersectLoop(refracRay);
+                    }
                 }
 
-                shadeCount =  0; //calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
+                shadeCount = calculateShadow(shadeCount, intersec, intersectionPoint, intersecShape);
 
                 if(intersec != null){
                     if(shadeCount == 0){
-                        mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec()), new Vec2(w, h));
+                        if(w==420 && h== 420){
+                            mRenderWindow.setPixel(mBufferedImage, RgbColor.GREEN, new Vec2(w, h));
+                        }else{
+                            mRenderWindow.setPixel(mBufferedImage, shape.material.shade(shape.getNormal(intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec()), new Vec2(w, h));
+                        }
                     }else{
                         RgbColor shade = shape.material.shade(shape.getNormal(intersec.getIntersec()), primaryRay.startPoint, lightList, intersec.getIntersec());
 
@@ -168,27 +195,32 @@ public class Raytracer {
         Material phong = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.8f, 0.8f), new RgbColor(0.1f, 0.1f, 0.1f), 6, 0, 0, this);
         Material phongLeft = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.8f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongRight = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
-        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1, 0, this, "Glass");
+        Material phongBack = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.98f, 0.88f, 0.82f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
+        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1.0f, 0, this, "Glass");
         Material phongSphere2 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.0f, 0.8f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 6, 0, 0, this);
+        Material phongSphere3 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 10, 0, 0.0f, this);
         //Materialien zur Liste hinzufügen
         materialList.add(0,phong);
         materialList.add(1,phongSphere);
         materialList.add(2,phongLeft);
         materialList.add(3,phongRight);
         materialList.add(4,phongSphere2);
+        materialList.add(5,phongSphere3);
+        materialList.add(6,phongBack);
 
     }
 
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
-        Sphere sphere1 = new Sphere(1f, new Vec3 (0, 0, -5f), materialList.get(1));
-        Sphere sphere2 = new Sphere(1f, new Vec3(-1.5f, -3, -1), materialList.get(4));
+        Sphere sphere1 = new Sphere(1f, new Vec3 (0f, -3.0f, -10f), materialList.get(1));
+        Sphere sphere2 = new Sphere(1.0f, new Vec3(2f, -3f, -5f), materialList.get(4));
+        Sphere sphere3 = new Sphere(1.5f, new Vec3(-1f, -2.5f, -0f), materialList.get(5));
         //Ebene erstellen (Postiton, Normale, Material)
         Plane topPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), materialList.get(0));
         Plane bottomPlane = new Plane(new Vec3(0f, -4f, 0f), new Vec3(0, 1, 0), materialList.get(0));
-        Plane rightPlane = new Plane(new Vec3(-5f, 0f, 0f), new Vec3(1, 0, 0), materialList.get(3));
-        Plane leftPlane = new Plane(new Vec3(5f, 0f, 0f), new Vec3(-1, 0, 0), materialList.get(2));
-        Plane backPlane = new Plane(new Vec3(0f, 0f, 10f), new Vec3(0, 0, -1), materialList.get(0));
+        Plane rightPlane = new Plane(new Vec3(-5.5f, 0f, 0f), new Vec3(1, 0, 0), materialList.get(3));
+        Plane leftPlane = new Plane(new Vec3(5.5f, 0f, 0f), new Vec3(-1, 0, 0), materialList.get(2));
+        Plane backPlane = new Plane(new Vec3(0f, 0f, 10f), new Vec3(0, 0, -1), materialList.get(6));
         //Shapes zur Liste hinzufügen
         shapeList.add(0, leftPlane);
         shapeList.add(1, rightPlane);
@@ -197,12 +229,13 @@ public class Raytracer {
         shapeList.add(4, backPlane);
         shapeList.add(5, sphere1);
         shapeList.add(6, sphere2);
+        shapeList.add(7, sphere3);
     }
 
     public void createLight(){
         //Licht erstellen (Lichtart, Position, Farbe, Ambient-Farbe)
-        Light light0 = new Light(0, new Vec3(3f, 3.9f, -5), new RgbColor(0.4f, 0.4f, 0.4f), new RgbColor(0.0f, 0.0f, 0.0f));
-        Light light1 = new Light(0, new Vec3(-3f, 3.9f, -5f), new RgbColor(0.4f, 0.4f, 0.4f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light0 = new Light(0, new Vec3(-3f, 3.9f, -5f), new RgbColor(0.4f, 0.4f, 0.4f), new RgbColor(0.0f, 0.0f, 0.0f));
+        Light light1 = new Light(0, new Vec3(3f, 3.9f, -5f), new RgbColor(0.4f, 0.4f, 0.4f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Light light2 = new Light(0, new Vec3(10, -4, -3), new RgbColor(1f, 0.1f, 0.8f), new RgbColor(0.0f, 0.0f, 0.0f));
         //Ligts zur Liste hinzugen
         lightList.add(0, light0);
