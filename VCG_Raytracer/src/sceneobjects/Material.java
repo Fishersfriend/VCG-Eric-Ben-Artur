@@ -73,6 +73,7 @@ public class Material {
         for (i = 0; i < lightList.size(); i++){
 
             if (reflection < 1) {
+
                 //Berechnung Lightvektor und normalizierung
                 Vec3 l = lightList.get(i).getPosition().sub(intersecPoint).normalize();
                 //Berechnung ViewerVektor und normalizierung
@@ -107,11 +108,8 @@ public class Material {
             raytracer.currentRecursions++;
             Vec3 v = cameraPos.sub(intersecPoint).normalize();
             Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v);
-            if (v.length() > 1.001f) {
-                System.out.print(normal+"\n");
-            }
 
-            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.1f)), r);
+            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.01f)), r);
 
             Shape shape = raytracer.intersectLoop(reflecRay);
 
@@ -119,12 +117,11 @@ public class Material {
                 reflecColor = shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
             }
             shadeCount = 0;
-            shadeCount = raytracer.calculateShadow(shadeCount, shape.intersection, shape.intersection.getIntersec(), -1);
-            System.out.print(shadeCount+"\n");
+            shadeCount = raytracer.calculateShadow(shadeCount, shape.intersection, shape.intersection.getIntersec(), -5);
+         //   System.out.print(shadeCount+"\n");
             for(int j = 0; j < shadeCount; j++){
                 reflecColor.sub(0.1f, 0.1f, 0.1f);
             }
-
         }
 
         return new RgbColor(red*phongCoeff + reflecColor.red()*reflection, green*phongCoeff + reflecColor.green()*reflection, blue*phongCoeff + reflecColor.blue()*reflection);
