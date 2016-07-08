@@ -197,9 +197,9 @@ public class Raytracer {
         Material phongLeft = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.8f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongRight = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongBack = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.98f, 0.88f, 0.82f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
-        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1.0f, 0, this, "Glass");
-        Material phongSphere2 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.0f, 0.8f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 6, 0, 0, this);
-        Material phongSphere3 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 10, 0, 0.0f, this);
+        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 0f, 1, this, "Glass");
+        Material phongSphere2 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.0f, 0.8f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 6, 0, 1, this);
+        Material phongSphere3 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 10, 0, 1f, this);
         //Materialien zur Liste hinzufügen
         materialList.add(0,phong);
         materialList.add(1,phongSphere);
@@ -214,7 +214,7 @@ public class Raytracer {
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
         Sphere sphere1 = new Sphere(1f, new Vec3 (-1f, -3.0f, -10f), materialList.get(1));
-        Sphere sphere2 = new Sphere(1.0f, new Vec3(2f, -3f, -5f), materialList.get(4));
+        Sphere sphere2 = new Sphere(2f, new Vec3(2f, -3f, -5f), materialList.get(4));
         Sphere sphere3 = new Sphere(1.5f, new Vec3(-1f, -2.5f, -0f), materialList.get(5));
         //Ebene erstellen (Postiton, Normale, Material)
         Plane topPlane = new Plane(new Vec3(0f, 4f, 0f), new Vec3(0, -1, 0), materialList.get(0));
@@ -248,6 +248,11 @@ public class Raytracer {
         for (int lightIndex = 0; lightIndex < lightList.size(); lightIndex++) {
             Ray shadowRay = new Ray(intersec.getIntersec());
             shadowRay.setDirection(lightList.get(lightIndex).getPosition());
+
+            if (intersecShape == -5) {
+                    shadowRay.startPoint = shadowRay.startPoint.add(shadowRay.direction.multScalar(0.01f));
+            }
+
             float shadowRayLength = shadowRay.endPoint.sub(shadowRay.startPoint).length();
 
             for(int shapeIndex = 0; shapeIndex < shapeList.size(); shapeIndex++){
