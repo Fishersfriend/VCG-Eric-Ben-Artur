@@ -42,19 +42,12 @@ public class Intersection {
 
     //Funktion RefraktionRay
     //[Berechnung des RefraktionsStrahl]
-    public Ray calculateRefractionRay (String material, Ray incRay, boolean debug) {
+    public Ray calculateRefractionRay (float index, Ray incRay, boolean debug) {
 
-        float n1 = 0f;
-        float n2 = 0f;
-
-        if(material.equals("Glass")){
-            n1 = 1.0f;
-            n2 = 1.5f;
-        }
 
         Vec3 n = normal;
         Vec3 i = incRay.direction.negate();
-        float eta = (n1/n2);
+        float eta = index;
         float ca = n.scalar(i);
         float cb = 1-eta*eta*(1-ca*ca);
 

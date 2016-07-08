@@ -129,4 +129,30 @@ public class Material {
 
         return new RgbColor(red*phongCoeff + reflecColor.red()*reflection, green*phongCoeff + reflecColor.green()*reflection, blue*phongCoeff + reflecColor.blue()*reflection);
     }
+
+    public float getTransmissionType(){
+        if(transmissionType.equals("Glass")){
+          return (1.0f/1.7f);
+        }else if(transmissionType.equals("Water")){
+          return (1.0f/1.333f);
+        }else if(transmissionType.equals("Diamant")){
+          return (1.0f/2.42f);
+        }
+
+        return 0.0f;
+    }
+
+    public float getInverseTransmissionType(){
+        if(transmissionType.equals("Glass")){
+          return (1.7f/1.0f);
+        }else if(transmissionType.equals("Water")){
+          return (1.333f/1.0f);
+        }else if(transmissionType.equals("Diamant")){
+          return (2.42f/1.0f);
+        }
+
+        return 0.0f;
+    }
+
+
 }

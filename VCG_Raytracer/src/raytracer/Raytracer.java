@@ -98,12 +98,12 @@ public class Raytracer {
 
                   if(shapeArr[i].material.transparent > 0){
 
-                      refracRay[i] = intersec.calculateRefractionRay("Glass", aliasRay[i], false);
+                      refracRay[i] = intersec.calculateRefractionRay(shapeArr[i].material.getTransmissionType(), aliasRay[i], false);
                       shapeArr[i] = intersectLoop(refracRay[i]);
 
                       if(intersec != null){
                           intersec.normal = intersec.normal.negate();
-                          refracRay[i] = intersec.calculateRefractionRay("Glass", refracRay[i], false);
+                          refracRay[i] = intersec.calculateRefractionRay(shapeArr[i].material.getInverseTransmissionType(), refracRay[i], false);
                           shapeArr[i] = intersectLoop(refracRay[i]);
                       }
                   }
@@ -139,12 +139,12 @@ public class Raytracer {
                 if(shape.material.transparent > 0){
                     Ray refracRay = null;
 
-                    refracRay = intersec.calculateRefractionRay("Glass", primaryRay, false);
+                    refracRay = intersec.calculateRefractionRay(shape.material.getTransmissionType(), primaryRay, false);
                     shape = intersectLoop(refracRay);
 
                     if(intersec != null){
                         intersec.normal = intersec.normal.negate();
-                        refracRay = intersec.calculateRefractionRay("Glass", refracRay, false);
+                        refracRay = intersec.calculateRefractionRay(shape.material.getInverseTransmissionType(), refracRay, false);
                         shape = intersectLoop(refracRay);
                     }
                 }
@@ -196,7 +196,7 @@ public class Raytracer {
         Material phongLeft = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0f, 0f, 0.8f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongRight = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
         Material phongBack = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.98f, 0.88f, 0.82f), new RgbColor(0f, 0f, 0f), 0, 0, 0, this);
-        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1.0f, 0, this, "Glass");
+        Material phongSphere = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 5, 1.0f, 0, this, "Water");
         Material phongSphere2 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.0f, 0.8f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 6, 0, 0, this);
         Material phongSphere3 = new Material(new RgbColor(0.1f, 0.1f, 0.1f), new RgbColor(0.8f, 0.0f, 0.8f), new RgbColor(0.5f, 0.5f, 0.5f), 10, 0, 0.0f, this);
         //Materialien zur Liste hinzufügen
@@ -212,7 +212,7 @@ public class Raytracer {
 
     public void createShapes(){
         //Kugel erstellen (Radius, Position, Material)
-        Sphere sphere1 = new Sphere(1f, new Vec3 (0f, -3.0f, -10f), materialList.get(1));
+        Sphere sphere1 = new Sphere(1f, new Vec3 (-1f, -3.0f, -10f), materialList.get(1));
         Sphere sphere2 = new Sphere(1.0f, new Vec3(2f, -3f, -5f), materialList.get(4));
         Sphere sphere3 = new Sphere(1.5f, new Vec3(-1f, -2.5f, -0f), materialList.get(5));
         //Ebene erstellen (Postiton, Normale, Material)
