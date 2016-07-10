@@ -60,9 +60,9 @@ public class Sphere extends Shape {
         float t1 = (float) 0.5 * (-b + temp);
 
         //Wenn Schnittpunkt, dann Entfernung und InstersectionPoint berechnen
-        //[Vergleichen der t Werte und aussortieren]
-        //[IntersectionPoint berechnung und transformation]
-        //[Bei keinem Schnittpunkt Return 0 Vektor]
+        //[Vergleichen der t Werte und aussortieren         ]
+        //[IntersectionPoint berechnung und transformation  ]
+        //[Bei keinem Schnittpunkt Return 0 Vektor          ]
         if (d > 0) {
 
             if (t0 > 0 && t1 > 0)

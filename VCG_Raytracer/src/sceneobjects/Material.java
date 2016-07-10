@@ -60,11 +60,6 @@ public class Material {
     //Funktion Shade
     //[Setzen der Übergabe-werte und Berechnung von Ambiente, Diffus und Spekular für jedes Licht in LichtListe]
     public RgbColor shade(Vec3 normal, Vec3 cameraPos, ArrayList<Light> lightList, Vec3 intersecPoint) {
-
-
-
-
-
         float red = 0, green = 0, blue = 0;
         double spec;
         int i;

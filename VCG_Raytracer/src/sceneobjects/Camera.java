@@ -5,8 +5,8 @@ import utils.*;
 import ui.*;
 import java.lang.Math;
 
-public class Camera extends SceneObject {
-
+public class Camera extends SceneObject
+{
 	//erstellen der TransformationsMatrix
 	Matrix4 matrixTransformation;
 	private Vec3 lookAt;
