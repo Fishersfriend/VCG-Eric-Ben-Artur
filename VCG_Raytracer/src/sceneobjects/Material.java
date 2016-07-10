@@ -70,6 +70,42 @@ public class Material {
         int i;
         RgbColor reflecColor = new RgbColor(0,0,0);
 
+        if(reflection != 0 && raytracer.maxRecursions > raytracer.currentRecursions)
+        {
+            raytracer.currentRecursions++;
+            Vec3 v = cameraPos.sub(intersecPoint).normalize();
+            Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v);
+
+            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.01f)), r);
+
+            Shape shape = raytracer.intersectLoop(reflecRay);
+
+            if(shape.material.transparent > 0){
+
+                Ray refracRay = shape.intersection.calculateRefractionRay(shape.material.getTransmissionType(), reflecRay, false);
+                shape = raytracer.intersectLoop(refracRay);
+
+                if(shape.intersection != null){
+                    shape.intersection.normal = shape.intersection.normal.negate();
+                    refracRay = shape.intersection.calculateRefractionRay(shape.material.getInverseTransmissionType(), refracRay, false);
+                    shape = raytracer.intersectLoop(refracRay);
+                }
+            }
+
+            if (shape != null) {
+                reflecColor = shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
+            }
+
+
+
+            shadeCount = 0;
+            shadeCount = raytracer.calculateShadow(shadeCount, shape.intersection, shape.intersection.getIntersec(), -5);
+         //   System.out.print(shadeCount+"\n");
+            for(int j = 0; j < shadeCount; j++){
+                reflecColor.sub(0.1f, 0.1f, 0.1f);
+            }
+        }
+
         for (i = 0; i < lightList.size(); i++){
 
             if (reflection < 1) {
@@ -103,26 +139,6 @@ public class Material {
 
         }
 
-        if(reflection != 0 && raytracer.maxRecursions > raytracer.currentRecursions)
-        {
-            raytracer.currentRecursions++;
-            Vec3 v = cameraPos.sub(intersecPoint).normalize();
-            Vec3 r =  normal.multScalar((normal.scalar(v)) * 2).sub(v);
-
-            Ray reflecRay = new Ray (intersecPoint.add(r.multScalar(0.01f)), r);
-
-            Shape shape = raytracer.intersectLoop(reflecRay);
-
-            if (shape != null) {
-                reflecColor = shape.material.shade(shape.getNormal(shape.intersection.getIntersec()), cameraPos, lightList, shape.intersection.getIntersec());
-            }
-            shadeCount = 0;
-            shadeCount = raytracer.calculateShadow(shadeCount, shape.intersection, shape.intersection.getIntersec(), -5);
-         //   System.out.print(shadeCount+"\n");
-            for(int j = 0; j < shadeCount; j++){
-                reflecColor.sub(0.1f, 0.1f, 0.1f);
-            }
-        }
 
         return new RgbColor(red*phongCoeff + reflecColor.red()*reflection, green*phongCoeff + reflecColor.green()*reflection, blue*phongCoeff + reflecColor.blue()*reflection);
     }
